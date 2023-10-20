@@ -12,7 +12,6 @@ async def read_record(stub, data):
     struct = Struct()
     struct.update(data)
     response = await stub.ReadRecord(service_pb2.ReadRequest(data=struct))
-    print(response.data)
     return MessageToDict(response.data)
 
 

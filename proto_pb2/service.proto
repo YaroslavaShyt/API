@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "google/protobuf/struct.proto";
 
 package myapp;
 
@@ -17,38 +18,33 @@ service DatabaseService {
 }
 
 message CreateRequest {
-  string name = 1;
-  string description = 2;
-  string status = 3;
+  google.protobuf.Struct data = 1;
 }
 
 message CreateResponse {
-  string message = 1;
+  google.protobuf.Struct data = 1;
 }
 
 message ReadRequest {
-  string record_id = 1;
+  google.protobuf.Struct data = 1;
 }
 
 message ReadResponse {
-  string data = 1;
+  google.protobuf.Struct data = 1;
 }
 
 message UpdateRequest {
-  string record_id = 1;
-  string name = 2;
-  string description = 3;
-  string status = 4;
+  google.protobuf.Struct data = 1;
 }
 
 message UpdateResponse {
-  string message = 1;
+  google.protobuf.Struct data = 1;
 }
 
 message DeleteRequest {
-  string record_id = 1;
+  google.protobuf.Struct data = 1;
 }
 
 message DeleteResponse {
-  string message = 1;
+  google.protobuf.Struct data = 1;
 }

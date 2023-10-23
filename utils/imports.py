@@ -4,8 +4,6 @@ import proto_pb2.service_pb2 as service_pb2
 import proto_pb2.service_pb2_grpc as service_pb2_grpc
 from proto_pb2.service_pb2_grpc import add_DatabaseServiceServicer_to_server as add_DatabaseServiceServicer_to_server
 import asyncio
-from google.protobuf.json_format import MessageToDict
-from google.protobuf.struct_pb2 import Struct
 
 # database
 import os

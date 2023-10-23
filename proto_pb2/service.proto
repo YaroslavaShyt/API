@@ -1,50 +1,58 @@
 syntax = "proto3";
-import "google/protobuf/struct.proto";
 
-package myapp;
 
 service DatabaseService {
-  // Create operation
+
   rpc CreateRecord (CreateRequest) returns (CreateResponse);
 
-  // Read operation
   rpc ReadRecord (ReadRequest) returns (ReadResponse);
 
-  // Update operation
   rpc UpdateRecord (UpdateRequest) returns (UpdateResponse);
 
-  // Delete operation
   rpc DeleteRecord (DeleteRequest) returns (DeleteResponse);
 }
 
 message CreateRequest {
-  google.protobuf.Struct data = 1;
+  string name = 1;
+  string description = 2;
+  string status = 3;
 }
 
 message CreateResponse {
-  google.protobuf.Struct data = 1;
+  bool success = 1;
+  string message = 2;
 }
 
 message ReadRequest {
-  google.protobuf.Struct data = 1;
+  int32 id = 1;
 }
 
 message ReadResponse {
-  google.protobuf.Struct data = 1;
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  string  timestamp = 4;
+  string status = 5;
+  bool success = 6;
 }
 
 message UpdateRequest {
-  google.protobuf.Struct data = 1;
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  string status = 4;
 }
 
 message UpdateResponse {
-  google.protobuf.Struct data = 1;
+  bool success = 1;
+  string message = 2;
 }
 
 message DeleteRequest {
-  google.protobuf.Struct data = 1;
+  int32 id = 1;
 }
 
 message DeleteResponse {
-  google.protobuf.Struct data = 1;
+  bool success = 1;
+  string message = 2;
 }

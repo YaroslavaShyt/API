@@ -1,6 +1,6 @@
 from utils.imports import load_dotenv, grpc, service_pb2_grpc, asyncio
 from database.connection_params import server_port
-from api_servicers.api_servicer import APIServicer
+from server_functions.api_servicer import APIServicer
 
 
 load_dotenv()

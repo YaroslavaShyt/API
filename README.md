@@ -3,6 +3,9 @@
 - pip install python-dotenv
 - pip install sqlalchemy[asyncio]
 
+- pip install pymssql
+
+
 # Database
 - Database settings:
 - MySQL(тимчасово)

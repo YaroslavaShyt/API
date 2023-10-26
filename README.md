@@ -20,7 +20,7 @@
 
 # Python connection settings
 - in file .env change parametr SERVER to yours (shown in ms sql server management studio, in dialog box)
-- 
+  
 # Run
 - Terminal 1: python server.py
 - Terminal 2: python client.py

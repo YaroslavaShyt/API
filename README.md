@@ -2,23 +2,25 @@
 - pip install grpcio grpcio-tools
 - pip install python-dotenv
 - pip install sqlalchemy[asyncio]
-
 - pip install pymssql
 
 
 # Database
 - Database settings:
-- MySQL(тимчасово)
-
+- Download Ms SQL Server 2022, Ms SQL Server Management Studio
+- Create database georesearch, table projects:
 - CREATE DATABASE GEORESEARCH;
-
 - CREATE TABLE PROJECTS(
-- 	ID INT auto_increment PRIMARY KEY,
--   NAME VARCHAR(255),
--   DESCRIPTION VARCHAR(255),
--   TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
--   STATUS VARCHAR(255));
+	ID INT PRIMARY KEY IDENTITY(1, 2),
+	NAME VARCHAR(70),
+	DESCRIPTION VARCHAR(70),
+	CREATED DATETIME DEFAULT GETDATE(),
+	STATUS VARCHAR(10)
+);
 
+# Python connection settings
+- in file .env change parametr SERVER to yours (shown in ms sql server management studio, in dialog box)
+- 
 # Run
 - Terminal 1: python server.py
 - Terminal 2: python client.py

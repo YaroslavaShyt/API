@@ -1,19 +1,24 @@
-pip install grpcio grpcio-tools
-pip install python-dotenv
-pip install sqlalchemy[asyncio]
+# Instalations
+- pip install grpcio grpcio-tools
+- pip install python-dotenv
+- pip install sqlalchemy[asyncio]
 
-Database settings:
-MySQL(тимчасово)
+- pip install pymssql
 
-CREATE DATABASE GEORESEARCH;
 
-CREATE TABLE PROJECTS(
-	ID INT auto_increment PRIMARY KEY,
-    NAME VARCHAR(255),
-    DESCRIPTION VARCHAR(255),
-    TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    STATUS VARCHAR(255)
-);
+# Database
+- Database settings:
+- MySQL(тимчасово)
 
-Terminal 1: python server.py
-Terminal 2: python client.py
+- CREATE DATABASE GEORESEARCH;
+
+- CREATE TABLE PROJECTS(
+- 	ID INT auto_increment PRIMARY KEY,
+-   NAME VARCHAR(255),
+-   DESCRIPTION VARCHAR(255),
+-   TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+-   STATUS VARCHAR(255));
+
+# Run
+- Terminal 1: python server.py
+- Terminal 2: python client.py

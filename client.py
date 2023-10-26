@@ -8,11 +8,11 @@ async def run() -> None:
 
         print(f"Create record:")
         create_result = await create_record(
-            stub, {"name": "project 1", "description": "test project 1", "status": "active"})
+            stub, {"name": "PROJECT", "description": "test project 1", "status": "active"})
         print(create_result)
 
         print(f"Read record:")
-        read_result = await read_record(stub, {"id": 2})
+        read_result = await read_record(stub, {"id": 123456})
         print(read_result)
 
         print(f"Update result:")

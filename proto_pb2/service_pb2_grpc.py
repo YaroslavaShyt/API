@@ -15,25 +15,25 @@ class DatabaseServiceStub(object):
             channel: A grpc.Channel.
         """
         self.CreateRecordProjects = channel.unary_unary(
-                '/DatabaseService/CreateRecordProjects',
-                request_serializer=proto__pb2_dot_service__pb2.CreateRequestProjects.SerializeToString,
-                response_deserializer=proto__pb2_dot_service__pb2.CreateResponseProjects.FromString,
-                )
+            '/DatabaseService/CreateRecordProjects',
+            request_serializer=proto__pb2_dot_service__pb2.CreateRequestProjects.SerializeToString,
+            response_deserializer=proto__pb2_dot_service__pb2.CreateResponseProjects.FromString,
+        )
         self.ReadRecordProjects = channel.unary_unary(
-                '/DatabaseService/ReadRecordProjects',
-                request_serializer=proto__pb2_dot_service__pb2.ReadRequestProjects.SerializeToString,
-                response_deserializer=proto__pb2_dot_service__pb2.ReadResponseProjects.FromString,
-                )
+            '/DatabaseService/ReadRecordProjects',
+            request_serializer=proto__pb2_dot_service__pb2.ReadRequestProjects.SerializeToString,
+            response_deserializer=proto__pb2_dot_service__pb2.ReadResponseProjects.FromString,
+        )
         self.UpdateRecordProjects = channel.unary_unary(
-                '/DatabaseService/UpdateRecordProjects',
-                request_serializer=proto__pb2_dot_service__pb2.UpdateRequestProjects.SerializeToString,
-                response_deserializer=proto__pb2_dot_service__pb2.UpdateResponseProjects.FromString,
-                )
+            '/DatabaseService/UpdateRecordProjects',
+            request_serializer=proto__pb2_dot_service__pb2.UpdateRequestProjects.SerializeToString,
+            response_deserializer=proto__pb2_dot_service__pb2.UpdateResponseProjects.FromString,
+        )
         self.DeleteRecordProjects = channel.unary_unary(
-                '/DatabaseService/DeleteRecordProjects',
-                request_serializer=proto__pb2_dot_service__pb2.DeleteRequestProjects.SerializeToString,
-                response_deserializer=proto__pb2_dot_service__pb2.DeleteResponseProjects.FromString,
-                )
+            '/DatabaseService/DeleteRecordProjects',
+            request_serializer=proto__pb2_dot_service__pb2.DeleteRequestProjects.SerializeToString,
+            response_deserializer=proto__pb2_dot_service__pb2.DeleteResponseProjects.FromString,
+        )
 
 
 class DatabaseServiceServicer(object):
@@ -66,100 +66,101 @@ class DatabaseServiceServicer(object):
 
 def add_DatabaseServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CreateRecordProjects': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateRecordProjects,
-                    request_deserializer=proto__pb2_dot_service__pb2.CreateRequestProjects.FromString,
-                    response_serializer=proto__pb2_dot_service__pb2.CreateResponseProjects.SerializeToString,
-            ),
-            'ReadRecordProjects': grpc.unary_unary_rpc_method_handler(
-                    servicer.ReadRecordProjects,
-                    request_deserializer=proto__pb2_dot_service__pb2.ReadRequestProjects.FromString,
-                    response_serializer=proto__pb2_dot_service__pb2.ReadResponseProjects.SerializeToString,
-            ),
-            'UpdateRecordProjects': grpc.unary_unary_rpc_method_handler(
-                    servicer.UpdateRecordProjects,
-                    request_deserializer=proto__pb2_dot_service__pb2.UpdateRequestProjects.FromString,
-                    response_serializer=proto__pb2_dot_service__pb2.UpdateResponseProjects.SerializeToString,
-            ),
-            'DeleteRecordProjects': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteRecordProjects,
-                    request_deserializer=proto__pb2_dot_service__pb2.DeleteRequestProjects.FromString,
-                    response_serializer=proto__pb2_dot_service__pb2.DeleteResponseProjects.SerializeToString,
-            ),
+        'CreateRecordProjects': grpc.unary_unary_rpc_method_handler(
+            servicer.servicers["PROJECTS"].CreateRecordProjects,
+            request_deserializer=proto__pb2_dot_service__pb2.CreateRequestProjects.FromString,
+            response_serializer=proto__pb2_dot_service__pb2.CreateResponseProjects.SerializeToString,
+        ),
+        'ReadRecordProjects': grpc.unary_unary_rpc_method_handler(
+            servicer.servicers["PROJECTS"].ReadRecordProjects,
+            request_deserializer=proto__pb2_dot_service__pb2.ReadRequestProjects.FromString,
+            response_serializer=proto__pb2_dot_service__pb2.ReadResponseProjects.SerializeToString,
+        ),
+        'UpdateRecordProjects': grpc.unary_unary_rpc_method_handler(
+            servicer.servicers["PROJECTS"].UpdateRecordProjects,
+            request_deserializer=proto__pb2_dot_service__pb2.UpdateRequestProjects.FromString,
+            response_serializer=proto__pb2_dot_service__pb2.UpdateResponseProjects.SerializeToString,
+        ),
+        'DeleteRecordProjects': grpc.unary_unary_rpc_method_handler(
+            servicer.servicers["PROJECTS"].DeleteRecordProjects,
+            request_deserializer=proto__pb2_dot_service__pb2.DeleteRequestProjects.FromString,
+            response_serializer=proto__pb2_dot_service__pb2.DeleteResponseProjects.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'DatabaseService', rpc_method_handlers)
+        'DatabaseService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
-
  # This class is part of an EXPERIMENTAL API.
+
+
 class DatabaseService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def CreateRecordProjects(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+                             target,
+                             options=(),
+                             channel_credentials=None,
+                             call_credentials=None,
+                             insecure=False,
+                             compression=None,
+                             wait_for_ready=None,
+                             timeout=None,
+                             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/DatabaseService/CreateRecordProjects',
-            proto__pb2_dot_service__pb2.CreateRequestProjects.SerializeToString,
-            proto__pb2_dot_service__pb2.CreateResponseProjects.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+                                             proto__pb2_dot_service__pb2.CreateRequestProjects.SerializeToString,
+                                             proto__pb2_dot_service__pb2.CreateResponseProjects.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ReadRecordProjects(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+                           target,
+                           options=(),
+                           channel_credentials=None,
+                           call_credentials=None,
+                           insecure=False,
+                           compression=None,
+                           wait_for_ready=None,
+                           timeout=None,
+                           metadata=None):
         return grpc.experimental.unary_unary(request, target, '/DatabaseService/ReadRecordProjects',
-            proto__pb2_dot_service__pb2.ReadRequestProjects.SerializeToString,
-            proto__pb2_dot_service__pb2.ReadResponseProjects.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+                                             proto__pb2_dot_service__pb2.ReadRequestProjects.SerializeToString,
+                                             proto__pb2_dot_service__pb2.ReadResponseProjects.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UpdateRecordProjects(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+                             target,
+                             options=(),
+                             channel_credentials=None,
+                             call_credentials=None,
+                             insecure=False,
+                             compression=None,
+                             wait_for_ready=None,
+                             timeout=None,
+                             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/DatabaseService/UpdateRecordProjects',
-            proto__pb2_dot_service__pb2.UpdateRequestProjects.SerializeToString,
-            proto__pb2_dot_service__pb2.UpdateResponseProjects.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+                                             proto__pb2_dot_service__pb2.UpdateRequestProjects.SerializeToString,
+                                             proto__pb2_dot_service__pb2.UpdateResponseProjects.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteRecordProjects(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+                             target,
+                             options=(),
+                             channel_credentials=None,
+                             call_credentials=None,
+                             insecure=False,
+                             compression=None,
+                             wait_for_ready=None,
+                             timeout=None,
+                             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/DatabaseService/DeleteRecordProjects',
-            proto__pb2_dot_service__pb2.DeleteRequestProjects.SerializeToString,
-            proto__pb2_dot_service__pb2.DeleteResponseProjects.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+                                             proto__pb2_dot_service__pb2.DeleteRequestProjects.SerializeToString,
+                                             proto__pb2_dot_service__pb2.DeleteResponseProjects.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

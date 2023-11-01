@@ -1,0 +1,2 @@
+class MemberPermissionsServicer:
+    pass

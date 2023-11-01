@@ -8,7 +8,7 @@ import asyncio
 # database
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, DATETIME
+from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, DATETIME, ForeignKey, or_
 from sqlalchemy.sql import func
 from sqlalchemy import TIMESTAMP
 from sqlalchemy.orm import sessionmaker

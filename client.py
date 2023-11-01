@@ -12,7 +12,9 @@ async def run() -> None:
         print(create_result)
 
         print(f"Read record:")
-        read_result = await read_record(stub, {"id": 123456})
+        read_result = await read_record(stub, {"id": 3,
+                                               # "name": "name", "description": "description", "status": "active"
+                                               })
         print(read_result)
 
         print(f"Update result:")

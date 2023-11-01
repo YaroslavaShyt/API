@@ -3,32 +3,88 @@ syntax = "proto3";
 
 service DatabaseService {
 
-  rpc CreateRecord (CreateRequest) returns (CreateResponse);
+  rpc CreateRecordProjects (CreateRequestProjects) returns (CreateResponseProjects);
 
-  rpc ReadRecord (ReadRequest) returns (ReadResponse);
+  rpc ReadRecordProjects (ReadRequestProjects) returns (ReadResponseProjects);
 
-  rpc UpdateRecord (UpdateRequest) returns (UpdateResponse);
+  rpc UpdateRecordProjects (UpdateRequestProjects) returns (UpdateResponseProjects);
 
-  rpc DeleteRecord (DeleteRequest) returns (DeleteResponse);
+  rpc DeleteRecordProjects (DeleteRequestProjects) returns (DeleteResponseProjects);
 }
-
-message CreateRequest {
+// PROJECTS
+message CreateRequestProjects {
   string name = 1;
   string description = 2;
   string status = 3;
 }
 
-message CreateResponse {
+message CreateResponseProjects {
   bool success = 1;
   string message = 2;
 }
 
-message ReadRequest {
-  int32 id = 1;
+message ReadRequestProjects {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  string status = 4;
 }
 
-message ReadResponse {
-  int32 id = 1;
+message ReadResponseProjects {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  string  timestamp = 4;
+  string status = 5;
+  bool success = 6;
+  string message = 7;
+}
+
+message UpdateRequestProjects {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  string status = 4;
+}
+
+message UpdateResponseProjects {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeleteRequestProjects {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  string status = 4;
+}
+
+message DeleteResponseProjects {
+  bool success = 1;
+  string message = 2;
+}
+// LINKS
+message CreateRequestLinks {
+  int64 project_id = 1;
+  string token = 2;
+  string expires = 3;
+  string status = 4;
+}
+
+message CreateResponseLinks {
+  bool success = 1;
+  string message = 2;
+}
+
+message ReadRequestLinks {
+  int64 project_id = 1;
+  string token = 2;
+  string expires = 3;
+  string status = 4;
+}
+
+message ReadResponseLinks {
+  int64 id = 1;
   string name = 2;
   string description = 3;
   string  timestamp = 4;
@@ -36,23 +92,26 @@ message ReadResponse {
   bool success = 6;
 }
 
-message UpdateRequest {
-  int32 id = 1;
+message UpdateRequestLinks {
+  int64 id = 1;
   string name = 2;
   string description = 3;
   string status = 4;
 }
 
-message UpdateResponse {
+message UpdateResponseLinks {
   bool success = 1;
   string message = 2;
 }
 
-message DeleteRequest {
-  int32 id = 1;
+message DeleteRequestLinks {
+  int64 project_id = 1;
+  string token = 2;
+  string expires = 3;
+  string status = 4;
 }
 
-message DeleteResponse {
+message DeleteResponseLinks {
   bool success = 1;
   string message = 2;
 }

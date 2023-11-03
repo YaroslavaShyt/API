@@ -1,17 +1,15 @@
 syntax = "proto3";
+package georesearch;
 
-
-service DatabaseService {
-
+service ProjectsService{
+    // PROJECTS
   rpc CreateRecordProjects (CreateRequestProjects) returns (CreateResponseProjects);
-
   rpc ReadRecordProjects (ReadRequestProjects) returns (ReadResponseProjects);
-
   rpc UpdateRecordProjects (UpdateRequestProjects) returns (UpdateResponseProjects);
-
   rpc DeleteRecordProjects (DeleteRequestProjects) returns (DeleteResponseProjects);
+
 }
-// PROJECTS
+
 message CreateRequestProjects {
   string name = 1;
   string description = 2;
@@ -22,6 +20,7 @@ message CreateResponseProjects {
   bool success = 1;
   string message = 2;
 }
+
 
 message ReadRequestProjects {
   int64 id = 1;
@@ -40,6 +39,7 @@ message ReadResponseProjects {
   string message = 7;
 }
 
+
 message UpdateRequestProjects {
   int64 id = 1;
   string name = 2;
@@ -52,6 +52,7 @@ message UpdateResponseProjects {
   string message = 2;
 }
 
+
 message DeleteRequestProjects {
   int64 id = 1;
   string name = 2;
@@ -59,59 +60,7 @@ message DeleteRequestProjects {
   string status = 4;
 }
 
-message DeleteResponseProjects {
-  bool success = 1;
-  string message = 2;
-}
-// LINKS
-message CreateRequestLinks {
-  int64 project_id = 1;
-  string token = 2;
-  string expires = 3;
-  string status = 4;
-}
-
-message CreateResponseLinks {
-  bool success = 1;
-  string message = 2;
-}
-
-message ReadRequestLinks {
-  int64 project_id = 1;
-  string token = 2;
-  string expires = 3;
-  string status = 4;
-}
-
-message ReadResponseLinks {
-  int64 id = 1;
-  string name = 2;
-  string description = 3;
-  string  timestamp = 4;
-  string status = 5;
-  bool success = 6;
-}
-
-message UpdateRequestLinks {
-  int64 id = 1;
-  string name = 2;
-  string description = 3;
-  string status = 4;
-}
-
-message UpdateResponseLinks {
-  bool success = 1;
-  string message = 2;
-}
-
-message DeleteRequestLinks {
-  int64 project_id = 1;
-  string token = 2;
-  string expires = 3;
-  string status = 4;
-}
-
-message DeleteResponseLinks {
+message DeleteResponseProjects {  
   bool success = 1;
   string message = 2;
 }

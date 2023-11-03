@@ -1,11 +1,11 @@
-from utils.imports import service_pb2, sessionmaker, or_
+from utils.imports import projects_pb2_grpc, sessionmaker, projects_pb2, or_
 from database.engine import engine
 from database.tables import projects
 
 Session = sessionmaker(bind=engine)
 
 
-class ProjectServicer:
+class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
     def CreateRecordProjects(self, request, context):
         try:
             with Session() as session:
@@ -17,7 +17,7 @@ class ProjectServicer:
             result = {"success": True, "message": "Record created"}
         except Exception:
             result = {"success": False, "message": Exception}
-        return service_pb2.CreateResponseProjects(**result)
+        return projects_pb2.CreateResponseProjects(**result)
 
     def ReadRecordProjects(self, request, context):
         try:
@@ -35,8 +35,8 @@ class ProjectServicer:
 
                 if conditions:
                     record = projects.select().where(or_(*conditions))
-                else:
-                    record = projects.select()
+             #   else:
+             #       record = projects.select()
                 result = session.execute(record).fetchone()
                 session.close()
 
@@ -52,7 +52,7 @@ class ProjectServicer:
                     data = {"success": False, "message": "No results"}
         except Exception as ex:
             data = {"success": False, "message": str(ex)}
-        return service_pb2.ReadResponseProjects(**data)
+        return projects_pb2.ReadResponseProjects(**data)
 
     def UpdateRecordProjects(self, request, context):
         try:
@@ -93,7 +93,7 @@ class ProjectServicer:
                               "message": "No parameters. Provide at least an id."}
         except Exception as ex:
             result = {"success": False, "message": str(ex)}
-        return service_pb2.UpdateResponseProjects(**result)
+        return projects_pb2.UpdateResponseProjects(**result)
 
     def DeleteRecordProjects(self, request, context):
         try:
@@ -123,4 +123,4 @@ class ProjectServicer:
                 result = {"success": True, "message": message}
         except Exception as ex:
             result = {"success": False, "message": str(ex)}
-        return service_pb2.UpdateResponseProjects(**result)
+        return projects_pb2.UpdateResponseProjects(**result)

@@ -58,7 +58,6 @@ class UsersServicer(users_pb2_grpc.UserServiceServicer):
                 if result:
                     data = {
                         "success": True,
-                        "id": result[0],
                         "name": result[1],
                         "key": result[2],
                         "hash": result[3],
@@ -80,13 +79,6 @@ class UsersServicer(users_pb2_grpc.UserServiceServicer):
                 conditions = []
                 if request.id:
                     conditions.append(users.c.id == request.id)
-                if request.name:
-                    conditions.append(users.c.name == request.name)
-                if request.description:
-                    conditions.append(users.c.description ==
-                                      request.description)
-                if request.status:
-                    conditions.append(users.c.status == request.status)
 
                 if conditions:
                     update_data = {}
@@ -95,16 +87,33 @@ class UsersServicer(users_pb2_grpc.UserServiceServicer):
                         update_data["name"] = request.name
                     if request.description:
                         update_data["description"] = request.description
+                    if request.key:
+                        update_data["key"] = request.key
+                    if request.hash:
+                        update_data["hash"] = request.hash
+                    if request.salt:
+                        update_data["salt"] = request.salt
+                    if request.status:
+                        update_data["status"] = request.status
+                    if request.description:
+                        update_data["description"] = request.description
 
                     if update_data:
-                        update_query = users.update().where(or_(*conditions)).values(
-                            **update_data
-                        )
-                        session.execute(update_query)
-                        session.commit()
-                        session.close()
-                        result = {"success": True,
-                                  "message": "USERS: Record updated"}
+                        select_query = users.select().where(
+                            or_(users.c.id == request.id))
+                        data = session.execute(select_query).fetchone()
+                        if data:
+                            update_query = users.update().where(or_(*conditions)).values(
+                                **update_data
+                            )
+                            session.execute(update_query)
+                            session.commit()
+                            session.close()
+                            result = {"success": True,
+                                      "message": "USERS: Record updated"}
+                        else:
+                            result = {"success": False,
+                                      "message": "No records for this id."}
                     else:
                         result = {"success": False,
                                   "message": "No parameters to update."}

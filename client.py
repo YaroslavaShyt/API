@@ -10,8 +10,8 @@ async def run() -> None:
         print(f"Create record users:")
         create_result = await create_record_users(
             stub, {"name": "PROJECT",
-                   "key": bytes.fromhex("123456"),
-                   "hash": bytes.fromhex("123456"),
+                   "key": "92e01118-bdfd-4b".encode('utf-8'),
+                   "hash": "5b3ad3145fd1518a9f8742c5fa850b60a6b82774e47bf8edf3d1ffc0d339701b".encode('utf-8'),
                    "salt": "salt",
                    "status": 1,
                    "description": "description",
@@ -30,7 +30,6 @@ async def run() -> None:
         print(f"Delete result users:")
         delete_result = await delete_record_users(stub, {"id": 1})
         print(delete_result)
-
 
         # PROJECTS
         stub = projects_pb2_grpc.ProjectsServiceStub(channel)

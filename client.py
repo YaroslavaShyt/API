@@ -1,10 +1,48 @@
-from utils.imports import projects_pb2_grpc, grpc, asyncio, users_pb2_grpc
+from utils.imports import projects_pb2_grpc, grpc, asyncio, users_pb2_grpc, raw_files_pb2_grpc
 from client_functions.projects import *
 from client_functions.users import *
+from client_functions.raw_files import *
+import pandas as pd
+
+
+def read_csv_file(file_path):
+    df = pd.read_csv(file_path)
+    csv_content = df.to_csv(index=False)
+    return bytes(csv_content, 'utf-8')
 
 
 async def run() -> None:
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
+        # PROJECTS
+        stub = projects_pb2_grpc.ProjectsServiceStub(channel)
+        print(f"Delete result projects:")
+        delete_result = await delete_record_projects(stub, {"id": [100000000]})
+        print(delete_result)
+
+       
+
+"""
+ print(f"Read record projects:")
+        read_result = await read_record_projects(stub, {})
+        print(read_result)
+
+        print(f"Create record projects:")
+        create_result = await create_record_projects(
+                    stub, {"name": "Name", "description": "test project 1", "status": 0})
+        print(create_result)
+
+        print(f"Update result projects:")
+        update_result = await update_record_projects(
+            stub, {"id": [1], "update_data": {"name": "newname", "description": "newdescription", "status": 1}})
+        print(update_result)
+
+        
+"""
+
+"""
+       
+
+        
         # USERS
         stub = users_pb2_grpc.UserServiceStub(channel)
         print(f"Create record users:")
@@ -31,27 +69,18 @@ async def run() -> None:
         delete_result = await delete_record_users(stub, {"id": 1})
         print(delete_result)
 
-        # PROJECTS
-        stub = projects_pb2_grpc.ProjectsServiceStub(channel)
 
-        print(f"Create record projects:")
-        create_result = await create_record_projects(
-            stub, {"name": "PROJECT", "description": "test project 1", "status": "active"})
+
+        stub = raw_files_pb2_grpc.RawFilesServiceStub(channel)
+        print(f"Create record raw files:")
+        data_bytes = read_csv_file("test_data/very_very_long_data.csv")
+        create_result = await create_record_raw_files(
+            stub, {"project_id": 3,
+                   "data": data_bytes,
+                   "status": 1
+                   })
         print(create_result)
-
-        print(f"Read record projects:")
-        read_result = await read_record_projects(stub, {"id": 3})
-        print(read_result)
-
-        print(f"Update result projects:")
-        update_result = await update_record_projects(
-            stub, {"id": 1, "name": "newname", "description": "newdescription", "status": "newstatus"})
-        print(update_result)
-
-        print(f"Delete result projects:")
-        delete_result = await delete_record_projects(stub, {"id": 1})
-        print(delete_result)
-
+"""
 
 if __name__ == "__main__":
     asyncio.run(run())

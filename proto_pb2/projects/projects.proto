@@ -1,66 +1,80 @@
 syntax = "proto3";
-package georesearch;
+//import "proto_pb2/google/api/google.api.annotations.proto";
 
 service ProjectsService{
     // PROJECTS
-  rpc CreateRecordProjects (CreateRequestProjects) returns (CreateResponseProjects);
-  rpc ReadRecordProjects (ReadRequestProjects) returns (ReadResponseProjects);
-  rpc UpdateRecordProjects (UpdateRequestProjects) returns (UpdateResponseProjects);
-  rpc DeleteRecordProjects (DeleteRequestProjects) returns (DeleteResponseProjects);
+  rpc CreateRecordProjects (CreateProjectsRequest) returns (CreateProjectsResponse);
+  rpc ReadRecordProjects (ReadProjectsRequest) returns (ReadProjectsResponse);
+  rpc UpdateRecordProjects (UpdateProjectsRequest) returns (UpdateProjectsResponse);
+  rpc DeleteRecordProjects (DeleteProjectsRequest) returns (DeleteProjectsResponse);
 
 }
 
-message CreateRequestProjects {
+message CreateProjectsRequest {
   string name = 1;
   string description = 2;
-  string status = 3;
+  int32 status = 3;
 }
 
-message CreateResponseProjects {
+message CreateProjectsResponse {
   bool success = 1;
   string message = 2;
 }
 
 
-message ReadRequestProjects {
-  int64 id = 1;
-  string name = 2;
-  string description = 3;
-  string status = 4;
+message ReadProjectsRequest {
+  repeated int64 id = 1;
+  repeated string name = 2;
+  repeated string description = 3;
+  repeated string timestamp = 4;
+  repeated int32 status = 5;
 }
 
-message ReadResponseProjects {
+message ReadProjectsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated ProjectObject data = 3;
+}
+
+message ProjectObject{
   int64 id = 1;
   string name = 2;
   string description = 3;
   string  timestamp = 4;
-  string status = 5;
-  bool success = 6;
-  string message = 7;
+  int32 status = 5;
 }
 
 
-message UpdateRequestProjects {
-  int64 id = 1;
+message UpdateProjectsRequest {
+  repeated int64 id = 1;
+  repeated string name = 2;
+  repeated string description = 3;
+  repeated string timestamp = 4;
+  repeated int32 status = 5;
+  UpdateObject update_data = 6;
+}
+
+message UpdateObject{
+//  int64 id = 1;
   string name = 2;
   string description = 3;
-  string status = 4;
+  int32 status = 4;
 }
 
-message UpdateResponseProjects {
+message UpdateProjectsResponse {
   bool success = 1;
   string message = 2;
 }
 
-
-message DeleteRequestProjects {
-  int64 id = 1;
-  string name = 2;
-  string description = 3;
-  string status = 4;
+message DeleteProjectsRequest {
+  repeated int64 id = 1;
+  repeated string name = 2;
+  repeated string description = 3;
+  repeated string timestamp = 4;
+  repeated int32 status = 5;;
 }
 
-message DeleteResponseProjects {  
+message DeleteProjectsResponse {  
   bool success = 1;
   string message = 2;
 }

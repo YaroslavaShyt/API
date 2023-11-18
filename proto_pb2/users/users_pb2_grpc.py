@@ -14,51 +14,51 @@ class UserServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CreateRecordUsers = channel.unary_unary(
-                '/UserService/CreateRecordUsers',
-                request_serializer=proto__pb2_dot_users_dot_users__pb2.CreateRequestUsers.SerializeToString,
-                response_deserializer=proto__pb2_dot_users_dot_users__pb2.CreateResponseUsers.FromString,
+        self.CreateUsersRecord = channel.unary_unary(
+                '/UserService/CreateUsersRecord',
+                request_serializer=proto__pb2_dot_users_dot_users__pb2.CreateUsersRequest.SerializeToString,
+                response_deserializer=proto__pb2_dot_users_dot_users__pb2.CreateUsersResponse.FromString,
                 )
-        self.ReadRecordUsers = channel.unary_unary(
-                '/UserService/ReadRecordUsers',
-                request_serializer=proto__pb2_dot_users_dot_users__pb2.ReadRequestUsers.SerializeToString,
-                response_deserializer=proto__pb2_dot_users_dot_users__pb2.ReadResponseUsers.FromString,
+        self.ReadUsersRecord = channel.unary_unary(
+                '/UserService/ReadUsersRecord',
+                request_serializer=proto__pb2_dot_users_dot_users__pb2.ReadUsersRequest.SerializeToString,
+                response_deserializer=proto__pb2_dot_users_dot_users__pb2.ReadUsersResponse.FromString,
                 )
-        self.UpdateRecordUsers = channel.unary_unary(
-                '/UserService/UpdateRecordUsers',
-                request_serializer=proto__pb2_dot_users_dot_users__pb2.UpdateRequestUsers.SerializeToString,
-                response_deserializer=proto__pb2_dot_users_dot_users__pb2.UpdateResponseUsers.FromString,
+        self.UpdateUsersRecord = channel.unary_unary(
+                '/UserService/UpdateUsersRecord',
+                request_serializer=proto__pb2_dot_users_dot_users__pb2.UpdateUsersRequest.SerializeToString,
+                response_deserializer=proto__pb2_dot_users_dot_users__pb2.UpdateUsersResponse.FromString,
                 )
-        self.DeleteRecordUsers = channel.unary_unary(
-                '/UserService/DeleteRecordUsers',
-                request_serializer=proto__pb2_dot_users_dot_users__pb2.DeleteRequestUsers.SerializeToString,
-                response_deserializer=proto__pb2_dot_users_dot_users__pb2.DeleteResponseUsers.FromString,
+        self.DeleteUsersRecord = channel.unary_unary(
+                '/UserService/DeleteUsersRecord',
+                request_serializer=proto__pb2_dot_users_dot_users__pb2.DeleteUsersRequest.SerializeToString,
+                response_deserializer=proto__pb2_dot_users_dot_users__pb2.DeleteUsersResponse.FromString,
                 )
 
 
 class UserServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CreateRecordUsers(self, request, context):
+    def CreateUsersRecord(self, request, context):
         """USERS
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ReadRecordUsers(self, request, context):
+    def ReadUsersRecord(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def UpdateRecordUsers(self, request, context):
+    def UpdateUsersRecord(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DeleteRecordUsers(self, request, context):
+    def DeleteUsersRecord(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -67,25 +67,25 @@ class UserServiceServicer(object):
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CreateRecordUsers': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateRecordUsers,
-                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.CreateRequestUsers.FromString,
-                    response_serializer=proto__pb2_dot_users_dot_users__pb2.CreateResponseUsers.SerializeToString,
+            'CreateUsersRecord': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateUsersRecord,
+                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.CreateUsersRequest.FromString,
+                    response_serializer=proto__pb2_dot_users_dot_users__pb2.CreateUsersResponse.SerializeToString,
             ),
-            'ReadRecordUsers': grpc.unary_unary_rpc_method_handler(
-                    servicer.ReadRecordUsers,
-                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.ReadRequestUsers.FromString,
-                    response_serializer=proto__pb2_dot_users_dot_users__pb2.ReadResponseUsers.SerializeToString,
+            'ReadUsersRecord': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReadUsersRecord,
+                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.ReadUsersRequest.FromString,
+                    response_serializer=proto__pb2_dot_users_dot_users__pb2.ReadUsersResponse.SerializeToString,
             ),
-            'UpdateRecordUsers': grpc.unary_unary_rpc_method_handler(
-                    servicer.UpdateRecordUsers,
-                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.UpdateRequestUsers.FromString,
-                    response_serializer=proto__pb2_dot_users_dot_users__pb2.UpdateResponseUsers.SerializeToString,
+            'UpdateUsersRecord': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateUsersRecord,
+                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.UpdateUsersRequest.FromString,
+                    response_serializer=proto__pb2_dot_users_dot_users__pb2.UpdateUsersResponse.SerializeToString,
             ),
-            'DeleteRecordUsers': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteRecordUsers,
-                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.DeleteRequestUsers.FromString,
-                    response_serializer=proto__pb2_dot_users_dot_users__pb2.DeleteResponseUsers.SerializeToString,
+            'DeleteUsersRecord': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteUsersRecord,
+                    request_deserializer=proto__pb2_dot_users_dot_users__pb2.DeleteUsersRequest.FromString,
+                    response_serializer=proto__pb2_dot_users_dot_users__pb2.DeleteUsersResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -98,7 +98,7 @@ class UserService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CreateRecordUsers(request,
+    def CreateUsersRecord(request,
             target,
             options=(),
             channel_credentials=None,
@@ -108,14 +108,14 @@ class UserService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/UserService/CreateRecordUsers',
-            proto__pb2_dot_users_dot_users__pb2.CreateRequestUsers.SerializeToString,
-            proto__pb2_dot_users_dot_users__pb2.CreateResponseUsers.FromString,
+        return grpc.experimental.unary_unary(request, target, '/UserService/CreateUsersRecord',
+            proto__pb2_dot_users_dot_users__pb2.CreateUsersRequest.SerializeToString,
+            proto__pb2_dot_users_dot_users__pb2.CreateUsersResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def ReadRecordUsers(request,
+    def ReadUsersRecord(request,
             target,
             options=(),
             channel_credentials=None,
@@ -125,14 +125,14 @@ class UserService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/UserService/ReadRecordUsers',
-            proto__pb2_dot_users_dot_users__pb2.ReadRequestUsers.SerializeToString,
-            proto__pb2_dot_users_dot_users__pb2.ReadResponseUsers.FromString,
+        return grpc.experimental.unary_unary(request, target, '/UserService/ReadUsersRecord',
+            proto__pb2_dot_users_dot_users__pb2.ReadUsersRequest.SerializeToString,
+            proto__pb2_dot_users_dot_users__pb2.ReadUsersResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def UpdateRecordUsers(request,
+    def UpdateUsersRecord(request,
             target,
             options=(),
             channel_credentials=None,
@@ -142,14 +142,14 @@ class UserService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/UserService/UpdateRecordUsers',
-            proto__pb2_dot_users_dot_users__pb2.UpdateRequestUsers.SerializeToString,
-            proto__pb2_dot_users_dot_users__pb2.UpdateResponseUsers.FromString,
+        return grpc.experimental.unary_unary(request, target, '/UserService/UpdateUsersRecord',
+            proto__pb2_dot_users_dot_users__pb2.UpdateUsersRequest.SerializeToString,
+            proto__pb2_dot_users_dot_users__pb2.UpdateUsersResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DeleteRecordUsers(request,
+    def DeleteUsersRecord(request,
             target,
             options=(),
             channel_credentials=None,
@@ -159,8 +159,8 @@ class UserService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/UserService/DeleteRecordUsers',
-            proto__pb2_dot_users_dot_users__pb2.DeleteRequestUsers.SerializeToString,
-            proto__pb2_dot_users_dot_users__pb2.DeleteResponseUsers.FromString,
+        return grpc.experimental.unary_unary(request, target, '/UserService/DeleteUsersRecord',
+            proto__pb2_dot_users_dot_users__pb2.DeleteUsersRequest.SerializeToString,
+            proto__pb2_dot_users_dot_users__pb2.DeleteUsersResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

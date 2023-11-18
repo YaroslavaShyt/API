@@ -3,81 +3,91 @@ syntax = "proto3";
 
 service UserService {
     // USERS
-  rpc CreateRecordUsers (CreateRequestUsers) returns (CreateResponseUsers);
-  rpc ReadRecordUsers (ReadRequestUsers) returns (ReadResponseUsers);
-  rpc UpdateRecordUsers (UpdateRequestUsers) returns (UpdateResponseUsers);
-  rpc DeleteRecordUsers (DeleteRequestUsers) returns (DeleteResponseUsers);
+  rpc CreateUsersRecord (CreateUsersRequest) returns (CreateUsersResponse);
+  rpc ReadUsersRecord (ReadUsersRequest) returns (ReadUsersResponse);
+  rpc UpdateUsersRecord (UpdateUsersRequest) returns (UpdateUsersResponse);
+  rpc DeleteUsersRecord (DeleteUsersRequest) returns (DeleteUsersResponse);
 }
 
-message CreateRequestUsers {
+message CreateUsersRequest {
   string name = 1;
-  bytes key = 2;
-  bytes hash = 3;
-  string salt = 4;
-  int32 status = 5;
-  string description = 6;
-  string timestamp = 7;
+  string username = 2;
+  bytes key = 3;
+  bytes hash = 4;
+  string salt = 5;
+  int32 status = 6;
+  string description = 7;
 }
 
-message CreateResponseUsers {
+message CreateUsersResponse {
   bool success = 1;
   string message = 2;
 }
 
 
-message ReadRequestUsers {
+message ReadUsersRequest {
+  repeated int64 id = 1;
+  repeated string name = 2;
+  repeated string username = 3;
+  repeated string key = 4;
+  repeated string hash = 5;
+  repeated string salt = 6;
+  repeated int32 status = 7;
+  repeated string description = 8;
+  repeated string timestamp = 9;
+}
+
+message ReadUsersResponse {
+  bool success = 1;
+  string message = 2;
+  repeated UserObject data = 3;
+}
+
+message UserObject{
   int64 id = 1;
   string name = 2;
-  string key = 3;
-  string hash = 4;
-  string salt = 5;
-  int32 status = 6;
-  string description = 7;
-  string timestamp = 8;
-}
-
-message ReadResponseUsers {
-  string name = 1;
-  string key = 2;
-  string hash = 3;
-  string salt = 4;
-  int32 status = 5;
-  string description = 6;
-  string timestamp = 7;
-  bool success = 8;
-  string message = 9;
+  string username = 3;
+  bytes key = 4;
+  bytes hash = 5;
+  string salt = 6;
+  int32 status = 7;
+  string description = 8;
+  string timestamp = 9;
 }
 
 
-message UpdateRequestUsers {
-  int64 id = 1;
-  string name = 2;
-  string key = 3;
-  string hash = 4;
-  string salt = 5;
-  int32 status = 6;
-  string description = 7;
-  string timestamp = 8;
+message UpdateUsersRequest {
+  repeated int64 id = 1;
+  repeated string name = 2;
+  repeated string username = 3;
+  repeated string key = 4;
+  repeated string hash = 5;
+  repeated string salt = 6;
+  repeated int32 status = 7;
+  repeated string description = 8;
+  repeated string timestamp = 9;
+  UserObject update_data = 10;
 }
 
-message UpdateResponseUsers {
+message UpdateUsersResponse {
   bool success = 1;
   string message = 2;
 }
 
 
-message DeleteRequestUsers {
-  int64 id = 1;
-  string name = 2;
-  string key = 3;
-  string hash = 4;
-  string salt = 5;
-  int32 status = 6;
-  string description = 7;
-  string timestamp = 8;
+message DeleteUsersRequest {
+  repeated int64 id = 1;
+  repeated string name = 2;
+  repeated string username = 3;
+  repeated string key = 4;
+  repeated string hash = 5;
+  repeated string salt = 6;
+  repeated int32 status = 7;
+  repeated string description = 8;
+  repeated string timestamp = 9;
 }
 
-message DeleteResponseUsers {
+message DeleteUsersResponse {
   bool success = 1;
   string message = 2;
 }

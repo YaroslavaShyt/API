@@ -13,17 +13,17 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
             with Session() as session:
                 # check <Name>
                 if not request.name or not request.name.strip():
-                    error_messages.append('Параметр <Name> не може бути порожнім або містити лише пробіли.')
+                    error_messages.append('Error: <Name> cannot be empty or include whitespaces only.')
 
                 # check <Description>
                 if not request.description or not request.description.strip():
                     error_messages.append(
-                        'Параметр <Description> не може бути порожнім або містити лише пробіли.')
+                        'Error: <Description> cannot be empty or include whitespaces only.')
                     
-                 # check <Status>
-               # if not request.statue:
-               #     error_messages.append(
-               #         'Параметр <Status> не може бути порожнім або містити лише пробіли.')
+                # check <Status>
+                if request.status not in (0, 1):
+                    error_messages.append(
+                        f'Error: <Status> cannot be "{request.status}". Only allowed values - 0 or 1')
                     
                 # if errors - do not do database query
                 if error_messages:

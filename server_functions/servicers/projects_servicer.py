@@ -27,7 +27,7 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
                     
                 # if errors - do not do database query
                 if error_messages:
-                    result = {"success": False, "messages": error_messages}
+                    result = {"success": False, "message": error_messages}
                 else:
                     # if no messages - do database query
                     new_record = projects.insert().values(
@@ -37,9 +37,9 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
                     )
                     session.execute(new_record)
                     session.commit()
-                    result = {"success": True, "message": "Record created"}
+                    result = {"success": True, "message": ["Record created"]}
         except Exception as e:
-            result = {"success": False, "message": str(e)}
+            result = {"success": False, "message": [str(e)]}
         return projects_pb2.CreateProjectsResponse(**result)
 
     def ReadRecordProjects(self, request, context):
@@ -78,9 +78,9 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
                         } for result in results]
                     }
                 else:
-                    data = {"success": False, "message": "No results"}
+                    data = {"success": False, "message": ["No results"]}
         except Exception as ex:
-            data = {"success": False, "message": str(ex)}
+            data = {"success": False, "message": [str(ex)]}
         return projects_pb2.ReadProjectsResponse(**data)
     
 
@@ -104,7 +104,7 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
 
     
                 if not session.query(projects).filter(or_(*conditions)).count():
-                    return projects_pb2.UpdateProjectsResponse(success=False, message="No matching records found.")
+                    return projects_pb2.UpdateProjectsResponse(success=False, message=["No matching records found."])
 
                 update_data = {
                     "name": request.update_data.name if request.update_data.name else None,
@@ -118,12 +118,12 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
                     )
                     session.execute(update_query)
                     session.commit()
-                    result = {"success": True, "message": "Record updated"}
+                    result = {"success": True, "message": ["Record updated"]}
                 else:
                     result = {"success": False,
-                            "message": "No parameters to update."}
+                            "message": ["No parameters to update."]}
         except Exception as ex:
-            result = {"success": False, "message": str(ex)}
+            result = {"success": False, "message": [str(ex)]}
 
         return projects_pb2.UpdateProjectsResponse(**result)
 
@@ -147,7 +147,7 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
 
                 
                 if not session.query(projects).filter(or_(*conditions)).count():
-                    return projects_pb2.DeleteProjectsResponse(success=False, message="No matching records found.")
+                    return projects_pb2.DeleteProjectsResponse(success=False, message=["No matching records found."])
 
                 if conditions:
                     delete_query = projects.delete().where(or_(*conditions))
@@ -157,9 +157,9 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
                     message = "Records deleted."
                 session.execute(delete_query)
                 session.commit()
-                result = {"success": True, "message": message}
+                result = {"success": True, "message": [message]}
         except Exception as ex:
-            result = {"success": False, "message": str(ex)}
+            result = {"success": False, "message": [str(ex)]}
 
         return projects_pb2.DeleteProjectsResponse(**result)
 

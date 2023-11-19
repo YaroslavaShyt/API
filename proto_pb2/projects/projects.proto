@@ -18,7 +18,7 @@ message CreateProjectsRequest {
 
 message CreateProjectsResponse {
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
 }
 
 
@@ -32,7 +32,7 @@ message ReadProjectsRequest {
 
 message ReadProjectsResponse {
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
   repeated ProjectObject data = 3;
 }
 
@@ -63,7 +63,7 @@ message UpdateObject{
 
 message UpdateProjectsResponse {
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
 }
 
 message DeleteProjectsRequest {
@@ -76,5 +76,5 @@ message DeleteProjectsRequest {
 
 message DeleteProjectsResponse {  
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
 }

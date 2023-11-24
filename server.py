@@ -1,5 +1,5 @@
-from utils.servicers_imports import UsersServicer, ProjectServicer#, RawFilesServicer
-from utils.imports import load_dotenv, grpc, projects_pb2_grpc, asyncio, users_pb2_grpc#, raw_files_pb2_grpc
+from utils.servicers_imports import (UsersServicer, ProjectServicer, AnomaliesServicer)#, RawFilesServicer
+from utils.imports import load_dotenv, grpc, projects_pb2_grpc, asyncio, users_pb2_grpc, anomalies_pb2, anomalies_pb2_grpc#, raw_files_pb2_grpc
 from database.connection_params import server_port
 
 load_dotenv()
@@ -14,6 +14,8 @@ async def serve() -> None:
         ProjectServicer(), server)
     users_pb2_grpc.add_UserServiceServicer_to_server(
         UsersServicer(), server)
+    anomalies_pb2_grpc.add_AnomaliesServiceServicer_to_server(
+        AnomaliesServicer(), server)
   #  raw_files_pb2_grpc.add_RawFilesServiceServicer_to_server(
   #      RawFilesServicer(), server)
     server.add_insecure_port(f"[::]:{server_port}")

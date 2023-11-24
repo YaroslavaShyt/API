@@ -22,6 +22,32 @@ users = Table('v_Users', metadata,
               Column('timestamp', DATETIME)
               )
 
+project_members = Table('v_ProjectMembers', metadata,
+                        Column('id', Integer, primary_key=True,
+                               autoincrement=True),
+                        Column('projectid', Integer,
+                               ForeignKey("projects.id")),
+                        Column('userid', Integer, ForeignKey("users.id")),
+                        Column('permissionid', Integer,
+                               ForeignKey("memberPermissions.id")),
+                        )
+
+anomalies = Table('v_Anomalies', metadata,
+                  Column('id', Integer, primary_key=True, autoincrement=True),
+                  Column('projectid', Integer, ForeignKey("projects.id")),
+                  Column('data', BINARY),
+                  Column('timestamp', DATETIME),
+                  Column('status', Integer),
+                  Column('name', String(30)),
+                  Column('tags', String(50)),
+                  Column('description', String(200), default='No information'),
+                  Column('radius', Integer),
+                  Column('scale', Integer),
+                  Column('processedByMemberId', Integer,
+                         ForeignKey('projectMembers.id'))
+                  )
+
+
 raw_files = Table('v_Rawfiles', metadata,
                   Column('id', Integer, primary_key=True, autoincrement=True),
                   Column('projectid', Integer, ForeignKey("projects.id")),

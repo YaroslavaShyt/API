@@ -1,8 +1,8 @@
 from datetime import datetime
 from utils.imports import anomalies_pb2_grpc, anomalies_pb2, sessionmaker, or_
 from database.engine import engine
-from database.tables import projects, anomalies
-
+from database.tables import projects, anomalies, project_members
+from service import *
 Session = sessionmaker(bind=engine)
 
 
@@ -13,19 +13,84 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
             with Session() as session:
 
                 # check <ProjectId>
-                conditions = [projects.c.id.in_(request.id)]
-                if not session.query(projects).filter(or_(*conditions)).count():
-                    return anomalies_pb2.CreateAnomaliesResponse(success=False, message=[f"No matching records found for projectId <{request.id}>"])
-
-                # check <Name>
-                if not request.name or not request.name.strip():
+                if request.HasField('projectId'):
+                    conditions = [projects.c.id.in_([request.projectId])]
+                    if not session.query(projects).filter(or_(*conditions)).count():
+                        error_messages.append(
+                            f"No matching records found for projectId <{request.id}>")
+                else:
                     error_messages.append(
-                        'Error: <Name> cannot be empty or include whitespaces only.')
+                        'Error: <projectId> is required but not provided.')
+
+                # check <Data>
+                if request.HasField('data'):
+                    if not request.data:
+                        error_messages.append('Error: <data> is empty.')
+                else:
+                    error_messages.append(
+                        'Error: <data> is required but not provided.')
 
                 # check <Status>
-                if request.status not in (0, 1):
+                if request.HasField('status'):
+                    if request.status not in (0, 1):
+                        error_messages.append(
+                            f'Error: <status> cannot be "{request.status}". Only allowed values - 0 or 1')
+                else:
                     error_messages.append(
-                        f'Error: <Status> cannot be "{request.status}". Only allowed values - 0 or 1')
+                        'Error: <status> is required but not provided.')
+
+                # check <Name>
+                if request.HasField('name'):
+                    if not request.name or not request.name.strip():
+                        error_messages.append(
+                            'Error: <name> cannot be empty or include whitespaces only.')
+                else:
+                    error_messages.append(
+                        'Error: <name> is required but not provided.')
+
+                # check <Tags>
+                if request.HasField('tags'):
+                    if not request.tags or not request.tags.strip():
+                        error_messages.append(
+                            'Error: <tags> cannot be empty or include whitespaces only.')
+                else:
+                    error_messages.append(
+                        'Error: <tags> is required but not provided.')
+
+                # check <Description>
+                if request.HasField('description'):
+                    if not request.description or not request.description.strip():
+                        error_messages.append(
+                            'Error: <description> cannot be empty or include whitespaces only.')
+
+                # check <Radius>
+                if request.HasField('radius'):
+                    if request.radius < 0:
+                        error_messages.append(
+                            'Error: <radius> cannot be below zero.')
+                else:
+                    error_messages.append(
+                        'Error: <radius> is required but not provided.')
+
+                # check <Scale>
+                if request.HasField('scale'):
+                    if request.scale < 0:
+                        error_messages.append(
+                            'Error: <scale> cannot be below zero.')
+                else:
+                    error_messages.append(
+                        'Error: <scale> is required but not provided.')
+
+                # check <ProcessedByMemberId>
+                if request.HasField('processedByMemberId'):
+                    conditions = [project_members.c.id.in_(
+                        [request.projectId])]
+                    if not session.query(project_members).filter(or_(*conditions)).count():
+                        error_messages.append(
+                            f'Error: No matching records found for processedByMemberId {request.projectId}.')
+                else:
+                    error_messages.append(
+                        'Error: <processedByMemberId> is required but not provided.')
 
                 # if errors - do not do database query
                 if error_messages:
@@ -39,11 +104,10 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                         name=request.name,
                         tags=request.tags,
                         description=request.description if (
-                            request.description) else None,
+                            request.HasField('description')) else None,
                         radius=request.radius,
                         scale=request.scale,
                         processedByMemberId=request.processedByMemberId
-
                     )
                     session.execute(new_record)
                     session.commit()
@@ -56,18 +120,60 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
         try:
             with Session() as session:
                 conditions = []
-                if request.id:
-                    conditions.append(projects.c.id.in_(request.id))
-                if request.projectId:
-                    conditions.append(
-                        projects.c.projectid.in_(request.projectid))
-                if request.timestamp:
-                    conditions.append(projects.c.timestamp.in_(
-                        datetime.fromisoformat(request.timestamp)))
-                if request.status:
-                    conditions.append(projects.c.status.in_(request.status))
-                if request.name:
-                    conditions.append(projects.c.name.in_(request.name))
+                error_messages = []
+                if request.HasField('id'):
+                    ids = request.id.split(',')
+                    if ids:
+                        if check_is_numeric_positive_list(ids):
+                            conditions.append(projects.c.id.in_(ids))
+                        else:
+                            error_messages.append(
+                                'Error: some <id> values are not integers.')
+                    else:
+                        error_messages.append('Error: <id> has incorrect format.')
+                if request.HasField('projectId'):
+                    project_ids = request.projectId.split(',')
+                    if project_ids:
+                        if check_is_numeric_positive_list(project_ids):
+                            conditions.append(projects.c.projectid.in_(project_ids))
+                        else:
+                            error_messages.append(
+                                'Error: some <projectId> values are not integers.')
+                    else:
+                        error_messages.append(
+                            'Error: <projectId> has incorrect format.')
+                if request.HasField('timestamp'):
+                    timestamps = request.projectId.split(',')
+                    if timestamps:
+                        conditions.append(projects.c.timestamp.in_(
+                            datetime.fromisoformat(timestamps)))
+                    else:
+                        error_messages.append(
+                            'Error: <timestamp> has incorrect format.')
+                        
+                if request.HasField('status'):
+                    statuses = request.status.split(',')
+                    if statuses:
+                        if check_is_status_int_in_range(statuses):
+                            conditions.append(projects.c.status.in_(request.status))
+                        else:
+                            error_messages.append(
+                                'Error: <status> values are not integers or are not in (0, 1).')
+                    else:
+                        error_messages.append(
+                            'Error: <timestamp> has incorrect format.')
+                        
+                if request.HasField('name'):
+                    names = request.name.split(',')
+                    if names:
+                        if check_string_is_not_empty(names):
+                            conditions.append(projects.c.name.in_(request.name))
+                        else:
+                            error_messages.append(
+                                'Error: <name> values are empty or consist of whitespaces only.')
+                    else:
+                        error_messages.append(
+                            'Error: <name> has incorrect format.')
                 if request.tags:
                     conditions.append(projects.c.tags.in_(request.tags))
                 if request.description:
@@ -90,10 +196,11 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                     # If conditions - filter the records
                     results = session.query(anomalies).filter(
                         or_(*conditions)).all()
-
+                print(results)
                 if results:
                     data = {
                         "success": True,
+                        "message": 'Found records.',
                         "data": [{
                             "id": result.id,
                             "projectId": result.projectId,
@@ -111,6 +218,7 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                 else:
                     data = {"success": False, "message": ["No results"]}
         except Exception as ex:
+            print('in ex')
             data = {"success": False, "message": [str(ex)]}
         return anomalies_pb2.ReadAnomaliesResponse(**data)
 

@@ -18,7 +18,7 @@ async def run() -> None:
         stub = anomalies_pb2_grpc.AnomaliesServiceStub(channel)
         print(f"Create record anomalies:")
         create_result = await create_record_anomalies(
-            stub, {"projectId": 4, 
+            stub, {#"projectId": 4, 
                    "data": "5b3ad3145fd1518a9f8742c5fa850b60a6b82774e47bf8edf3d1ffc0d339701b".encode('utf-8'), 
                    "status": 0,
                    "name": "Name", 
@@ -26,24 +26,28 @@ async def run() -> None:
                    "description": "test project 1", 
                    "radius": 3,
                    "scale": 5,
-                   "processedByMemberId": 5
+                   "processedByMemberId": 1
                    })
         print(create_result)
+       
+"""
+        print(f"Read record anomalies:")
+        read_result = await read_record_anomalies(stub, {})
+        print(read_result)
+       
 
         print(f"Delete result anomalies:")
         delete_result = await delete_record_anomalies(stub, {"id": [100000000]})
         print(delete_result)
 
-        print(f"Read record anomalies:")
-        read_result = await read_record_anomalies(stub, {})
-        print(read_result)
+        
 
         print(f"Update result anomalies:")
         update_result = await update_record_anomalies(
             stub, {"id": [1], "update_data": {"name": "newname", "description": "newdescription", "status": 1}})
         print(update_result)
 
-        """
+       
 # PROJECTS
         stub = projects_pb2_grpc.ProjectsServiceStub(channel)
         print(f"Delete result projects:")

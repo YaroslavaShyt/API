@@ -8,15 +8,15 @@ service AnomaliesService{
 }
 
 message CreateAnomaliesRequest {
-  int64 projectId = 1;
-  bytes data = 2;
-  int32 status = 3;
-  string name = 4;
-  string tags = 5;
-  string description = 6;
-  int64 radius = 7;
-  int64 scale = 8;
-  int64 proccessedByMemberId = 9;
+  optional int64 projectId = 1;
+  optional bytes data = 2;
+  optional int32 status = 3;
+  optional string name = 4;
+  optional string tags = 5;
+  optional string description = 6;
+  optional int64 radius = 7;
+  optional int64 scale = 8;
+  optional int64 processedByMemberId = 9;
 }
 
 message CreateAnomaliesResponse {
@@ -26,17 +26,17 @@ message CreateAnomaliesResponse {
 
 
 message ReadAnomaliesRequest {
-  int64 id = 1;
-  int64 projectId = 2;
-  bytes data = 3;
-  string timestamp = 4;
-  int32 status = 5;
-  string name = 6;
-  string tags = 7;
-  string description = 8;
-  int64 radius = 9;
-  int64 scale = 10;
-  int64 proccessedByMemberId = 11;
+  optional string id = 1;         // "1,2,3," і парсити по комі при отриманні
+  optional string projectId = 2;  // "1,2,3," і парсити по комі при отриманні
+  optional bytes data = 3;       
+  optional string timestamp = 4; // "01.10.2023," і парсити по комі при отриманні
+  optional string status = 5;     // "0,1" 
+  optional string name = 6;      // "name1, name2, name3"
+  optional string tags = 7;      // "tag1, tag2, tag3"
+  optional string description = 8; // ціла стрінга
+  optional string radius = 9;      // "1, 2, 3"
+  optional string scale = 10;      // "1, 2, 3"
+  optional string processedByMemberId = 11; // "1, 2, 3"
 }
 
 message ReadAnomaliesResponse {
@@ -56,23 +56,23 @@ message AnomaliesObject{
   string description = 8;
   int64 radius = 9;
   int64 scale = 10;
-  int64 proccessedByMemberId = 11;
+  int64 processedByMemberId = 11;
 }
 
-
+// усе як стрінг через кому, буде парситись - "1, 2, 3"
 message UpdateAnomaliesRequest {
-  repeated int64 id = 1;
-  repeated int64 projectId = 2;
-  repeated bytes data = 3;
-  repeated string timestamp = 4;
-  repeated int32 status = 5;
-  repeated string name = 6;
-  repeated string tags = 7;
-  repeated string description = 8;
-  repeated int64 radius = 9;
-  repeated int64 scale = 10;
-  repeated int64 proccessedByMemberId = 11;
-  UpdateAnomaliesObject update_data = 12;
+  optional string id = 1;
+  optional string projectId = 2;
+  optional bytes data = 3;
+  optional string timestamp = 4;
+  optional string status = 5;
+  optional string name = 6;
+  optional string tags = 7;
+  optional string description = 8;
+  optional string radius = 9;
+  optional string scale = 10;
+  optional string processedByMemberId = 11;
+  optional UpdateAnomaliesObject update_data = 12;
 }
 
 message UpdateAnomaliesObject{
@@ -85,7 +85,7 @@ message UpdateAnomaliesObject{
   string description = 7;
   int64 radius = 8;
   int64 scale = 9;
-  int64 proccessedByMemberId = 10;
+  int64 processedByMemberId = 10;
 }
 
 message UpdateAnomaliesResponse {
@@ -94,17 +94,17 @@ message UpdateAnomaliesResponse {
 }
 
 message DeleteAnomaliesRequest {
-  repeated int64 id = 1;
-  repeated int64 projectId = 2;
-  repeated bytes data = 3;
-  repeated string timestamp = 4;
-  repeated int32 status = 5;
-  repeated string name = 6;
-  repeated string tags = 7;
-  repeated string description = 8;
-  repeated int64 radius = 9;
-  repeated int64 scale = 10;
-  repeated int64 proccessedByMemberId = 11;
+  optional string id = 1;
+  optional string projectId = 2;
+  optional bytes data = 3;
+  optional string timestamp = 4;
+  optional string status = 5;
+  optional string name = 6;
+  optional string tags = 7;
+  optional string description = 8;
+  optional string radius = 9;
+  optional string scale = 10;
+  optional string processedByMemberId = 11;
 }
 
 message DeleteAnomaliesResponse {  

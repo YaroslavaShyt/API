@@ -16,6 +16,17 @@ async def run() -> None:
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
         # ANOMALIES
         stub = anomalies_pb2_grpc.AnomaliesServiceStub(channel)
+        print(f"Delete result anomalies:")
+        delete_result = await delete_record_anomalies(stub, {"id": '1'})
+        print(delete_result)
+"""
+        
+       
+       
+        print(f"Read record anomalies:")
+        read_result = await read_record_anomalies(stub, {"projectId" : '4'})
+        print(read_result)
+
         print(f"Create record anomalies:")
         create_result = await create_record_anomalies(
             stub, {#"projectId": 4, 
@@ -29,23 +40,19 @@ async def run() -> None:
                    "processedByMemberId": 1
                    })
         print(create_result)
-       
-"""
-        print(f"Read record anomalies:")
-        read_result = await read_record_anomalies(stub, {})
-        print(read_result)
-       
 
-        print(f"Delete result anomalies:")
-        delete_result = await delete_record_anomalies(stub, {"id": [100000000]})
-        print(delete_result)
+        
+        print(f"Update result anomalies:")
+        update_result = await update_record_anomalies(
+            stub, {"id": '1', "update_data": {"name": "newname"}})
+        print(update_result)
+         
 
         
 
-        print(f"Update result anomalies:")
-        update_result = await update_record_anomalies(
-            stub, {"id": [1], "update_data": {"name": "newname", "description": "newdescription", "status": 1}})
-        print(update_result)
+        
+
+       
 
        
 # PROJECTS

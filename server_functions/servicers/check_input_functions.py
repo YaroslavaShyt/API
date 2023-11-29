@@ -19,4 +19,4 @@ def check_is_status_int_in_range(values):
         return False
     
 def check_string_is_not_empty(value):
-    return not value.name or not value.name.strip()
+    return value or value.strip()

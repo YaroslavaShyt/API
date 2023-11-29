@@ -2,7 +2,8 @@ from datetime import datetime
 from utils.imports import anomalies_pb2_grpc, anomalies_pb2, sessionmaker, or_
 from database.engine import engine
 from database.tables import projects, anomalies, project_members
-from service import *
+from server_functions.servicers.check_input_functions import *
+
 Session = sessionmaker(bind=engine)
 
 
@@ -125,69 +126,120 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                     ids = request.id.split(',')
                     if ids:
                         if check_is_numeric_positive_list(ids):
-                            conditions.append(projects.c.id.in_(ids))
+                            conditions.append(anomalies.c.id.in_(ids))
                         else:
                             error_messages.append(
-                                'Error: some <id> values are not integers.')
+                                'Error: some <id> values are not integers or are negative.')
                     else:
-                        error_messages.append('Error: <id> has incorrect format.')
+                        error_messages.append(
+                            'Error: <id> has incorrect format.')
+
                 if request.HasField('projectId'):
                     project_ids = request.projectId.split(',')
+                    print(project_ids)
                     if project_ids:
                         if check_is_numeric_positive_list(project_ids):
-                            conditions.append(projects.c.projectid.in_(project_ids))
+                            conditions.append(
+                                projects.c.id.in_(project_ids))
                         else:
                             error_messages.append(
                                 'Error: some <projectId> values are not integers.')
                     else:
                         error_messages.append(
                             'Error: <projectId> has incorrect format.')
+
                 if request.HasField('timestamp'):
                     timestamps = request.projectId.split(',')
                     if timestamps:
-                        conditions.append(projects.c.timestamp.in_(
+                        conditions.append(anomalies.c.timestamp.in_(
                             datetime.fromisoformat(timestamps)))
                     else:
                         error_messages.append(
                             'Error: <timestamp> has incorrect format.')
-                        
+
                 if request.HasField('status'):
                     statuses = request.status.split(',')
                     if statuses:
                         if check_is_status_int_in_range(statuses):
-                            conditions.append(projects.c.status.in_(request.status))
+                            conditions.append(anomalies.c.status.in_(statuses))
                         else:
                             error_messages.append(
                                 'Error: <status> values are not integers or are not in (0, 1).')
                     else:
                         error_messages.append(
                             'Error: <timestamp> has incorrect format.')
-                        
+
                 if request.HasField('name'):
                     names = request.name.split(',')
                     if names:
                         if check_string_is_not_empty(names):
-                            conditions.append(projects.c.name.in_(request.name))
+                            conditions.append(anomalies.c.name.in_(names))
                         else:
                             error_messages.append(
                                 'Error: <name> values are empty or consist of whitespaces only.')
                     else:
                         error_messages.append(
                             'Error: <name> has incorrect format.')
-                if request.tags:
-                    conditions.append(projects.c.tags.in_(request.tags))
-                if request.description:
-                    conditions.append(
-                        projects.c.description.in_(request.description))
-                if request.radius:
-                    conditions.append(
-                        projects.c.radius.in_(request.radius))
-                if request.scale:
-                    conditions.append(
-                        projects.c.scale.in_(request.scale))
-                if request.processedByMemberId:
-                    conditions.append(
-                        projects.c.processedByMemberId.in_(request.processedByMemberId))
+
+                if request.HasField('tags'):
+                    tags = request.tags.split(',')
+                    if tags:
+                        if check_string_is_not_empty(tags):
+                            conditions.append(anomalies.c.tags.in_(tags))
+                        else:
+                            error_messages.append(
+                                'Error: <tags> values are empty or consist of whitespaces only.')
+                    else:
+                        error_messages.append(
+                            'Error: <tags> has incorrect format.')
+
+                if request.HasField('description'):
+                    if check_string_is_not_empty([request.description]):
+                        conditions.append(
+                            anomalies.c.description.in_([request.description]))
+                    else:
+                        error_messages.append(
+                            'Error: <description> values are empty or consist of whitespaces only.')
+
+                if request.HasField('radius'):
+                    radiuses = request.radius.split(',')
+                    if radiuses:
+                        if check_is_numeric_positive_list(radiuses):
+                            conditions.append(
+                                anomalies.c.radius.in_(radiuses))
+                        else:
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <radius> has incorrect format.')
+
+                if request.HasField('scale'):
+                    scales = request.scale.split(',')
+                    if scales:
+                        if check_is_numeric_positive_list(scales):
+                            conditions.append(
+                                anomalies.c.scale.in_(scales))
+                        else:
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <radius> has incorrect format.')
+
+                if request.HasField('processedByMemberId'):
+                    processedByMemberIds = request.processedByMemberId.split(
+                        ',')
+                    if processedByMemberIds:
+                        if check_is_numeric_positive_list(processedByMemberIds):
+                            conditions.append(
+                                anomalies.c.processedByMemberId.in_(processedByMemberIds))
+                        else:
+                            error_messages.append(
+                                'Error: some <processedByMemberId> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <processedByMemberId> has incorrect format.')
 
                 if not conditions:
                     # If no conditions - fetch all records
@@ -196,14 +248,14 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                     # If conditions - filter the records
                     results = session.query(anomalies).filter(
                         or_(*conditions)).all()
-                print(results)
+
                 if results:
                     data = {
                         "success": True,
-                        "message": 'Found records.',
+                        "message": ['Found records.'],
                         "data": [{
                             "id": result.id,
-                            "projectId": result.projectId,
+                            "projectId": result.projectid,
                             "data": result.data,
                             "timestamp": str(result.timestamp),
                             "status": result.status,
@@ -218,116 +270,366 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                 else:
                     data = {"success": False, "message": ["No results"]}
         except Exception as ex:
-            print('in ex')
             data = {"success": False, "message": [str(ex)]}
         return anomalies_pb2.ReadAnomaliesResponse(**data)
-
+# апдейтить не той name
     def UpdateRecordAnomalies(self, request, context):
-        try:
+     #   try:
             with Session() as session:
                 conditions = []
-                if request.id:
-                    conditions.append(projects.c.id.in_(request.id))
-                if request.projectId:
-                    conditions.append(
-                        projects.c.projectid.in_(request.projectid))
-                if request.timestamp:
-                    conditions.append(projects.c.timestamp.in_(
-                        datetime.fromisoformat(request.timestamp)))
-                if request.status:
-                    conditions.append(projects.c.status.in_(request.status))
-                if request.name:
-                    conditions.append(projects.c.name.in_(request.name))
-                if request.tags:
-                    conditions.append(projects.c.tags.in_(request.tags))
-                if request.description:
-                    conditions.append(
-                        projects.c.description.in_(request.description))
-                if request.radius:
-                    conditions.append(
-                        projects.c.radius.in_(request.radius))
-                if request.scale:
-                    conditions.append(
-                        projects.c.scale.in_(request.scale))
-                if request.processedByMemberId:
-                    conditions.append(
-                        projects.c.processedByMemberId.in_(request.processedByMemberId))
+                error_messages = []
+                update_data = {}
 
-                if not session.query(projects).filter(or_(*conditions)).count():
-                    return anomalies_pb2.UpdateAnomaliesResponse(success=False, message=["No matching records found."])
+                if request.HasField('id'):
+                    ids = request.id.split(',')
+                    if ids:
+                        if check_is_numeric_positive_list(ids):
+                            conditions.append(anomalies.c.id.in_(ids))
+                        else:
+                            error_messages.append(
+                                'Error: some <id> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <id> has incorrect format.')
 
-                update_data = {
-                    "projectid": request.update_data.projectid if request.update_data.projectid else None,
-                    "data": request.update_data.data if request.update_data.data else None,
-                    "status": request.update_data.status if request.update_data.status else None,
-                    "name": request.update_data.name if request.update_data.name else None,
-                    "tags": request.update_data.tags if request.update_data.tags else None,
-                    "description": request.update_data.description if request.update_data.description else None,
-                    "radius": request.update_data.radius if request.update_data.radius else None,
-                    "scale": request.update_data.scale if request.update_data.scale else None,
-                    "proceddedByMemberId": request.update_data.proceddedByMemberId if request.update_data.proceddedByMemberId else None,
+                if request.HasField('projectId'):
+                    project_ids = request.projectId.split(',')
+                    if project_ids:
+                        if check_is_numeric_positive_list(project_ids):
+                            conditions.append(
+                                projects.c.id.in_(project_ids))
+                        else:
+                            error_messages.append(
+                                'Error: some <projectId> values are not integers.')
+                    else:
+                        error_messages.append(
+                            'Error: <projectId> has incorrect format.')
 
-                }
+                if request.HasField('timestamp'):
+                    timestamps = request.projectId.split(',')
+                    if timestamps:
+                        conditions.append(projects.c.timestamp.in_(
+                            datetime.fromisoformat(timestamps)))
+                    else:
+                        error_messages.append(
+                            'Error: <timestamp> has incorrect format.')
 
-                if any(update_data.values()):
-                    update_query = projects.update().where(or_(*conditions)).values(
-                        **{k: v for k, v in update_data.items() if v is not None}
-                    )
-                    session.execute(update_query)
-                    session.commit()
-                    result = {"success": True, "message": ["Record updated"]}
+                if request.HasField('status'):
+                    statuses = request.status.split(',')
+                    if statuses:
+                        if check_is_status_int_in_range(statuses):
+                            conditions.append(projects.c.status.in_(statuses))
+                        else:
+                            error_messages.append(
+                                'Error: <status> values are not integers or are not in (0, 1).')
+                    else:
+                        error_messages.append(
+                            'Error: <timestamp> has incorrect format.')
+
+                if request.HasField('name'):
+                    names = request.name.split(',')
+                    if names:
+                        if check_string_is_not_empty(names):
+                            conditions.append(projects.c.name.in_(names))
+                        else:
+                            error_messages.append(
+                                'Error: <name> values are empty or consist of whitespaces only.')
+                    else:
+                        error_messages.append(
+                            'Error: <name> has incorrect format.')
+
+                if request.HasField('tags'):
+                    tags = request.tags.split(',')
+                    if tags:
+                        if check_string_is_not_empty(tags):
+                            conditions.append(projects.c.tags.in_(tags))
+                        else:
+                            error_messages.append(
+                                'Error: <tags> values are empty or consist of whitespaces only.')
+                    else:
+                        error_messages.append(
+                            'Error: <tags> has incorrect format.')
+
+                if request.HasField('description'):
+                    if check_string_is_not_empty([request.description]):
+                        conditions.append(
+                            projects.c.description.in_([request.description]))
+                    else:
+                        error_messages.append(
+                            'Error: <description> values are empty or consist of whitespaces only.')
+
+                if request.HasField('radius'):
+                    radiuses = request.radius.split(',')
+                    if radiuses:
+                        if check_is_numeric_positive_list(radiuses):
+                            conditions.append(
+                                projects.c.radius.in_(radiuses))
+                        else:
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <radius> has incorrect format.')
+
+                if request.HasField('scale'):
+                    scales = request.scale.split(',')
+                    if scales:
+                        if check_is_numeric_positive_list(scales):
+                            conditions.append(
+                                projects.c.scale.in_(scales))
+                        else:
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <radius> has incorrect format.')
+
+                if request.HasField('processedByMemberId'):
+                    processedByMemberIds = request.processedByMemberId.split(
+                        ',')
+                    if processedByMemberIds:
+                        if check_is_numeric_positive_list(processedByMemberIds):
+                            conditions.append(
+                                projects.c.processedByMemberId.in_(processedByMemberIds))
+                        else:
+                            error_messages.append(
+                                'Error: some <processedByMemberId> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <processedByMemberId> has incorrect format.')
+
+                if request.HasField('update_data'):
+                    if request.update_data.HasField('projectId'):
+                        if not check_is_numeric_positive_list([request.update_data.projectId]):
+                            error_messages.append(
+                                    'Error: some <id> values are not integers or are negative.')     
+                        else:
+                            conditions = [projects.c.projectid.in_([request.update_data.projectId])]
+                            if not session.query(projects).filter(or_(*conditions)).count():
+                                error_messages.append(
+                                    f"No matching records found for projectId <{request.update_data.projectId}>")
+                            else:
+                                update_data["projectId"] = request.update_data.projectId
+                            
+                    if request.update_data.HasField('name'):
+                        print('true', request.update_data.name)
+                        if not check_string_is_not_empty(request.update_data.name):
+                            error_messages.append(
+                                'Error: <name> values are empty or consist of whitespaces only.')
+                        else:
+                            update_data["name"] = request.update_data.name
+                    
+                    if request.update_data.HasField('data'):                    
+                        update_data["data"] = request.update_data.data
+
+                    if request.update_data.HasField('status'):
+                        if not check_is_status_int_in_range([request.update_data.statuse]):
+                            error_messages.append(
+                                'Error: <status> values are not integers or are not in (0, 1).')
+                        else:
+                            update_data["status"] = request.update_data.name
+
+                    if request.update_data.HasField('tags'):
+                        if not check_string_is_not_empty(request.update_data.tags):
+                            error_messages.append(
+                                'Error: <tags> values are empty or consist of whitespaces only.')
+                        else:
+                            update_data["tags"] = request.update_data.tags
+
+                    if request.update_data.HasField('description'):
+                        if not check_string_is_not_empty(request.update_data.description):
+                            error_messages.append(
+                                'Error: <description> values are empty or consist of whitespaces only.')
+                        else:
+                            update_data["description"] = request.update_data.description
+
+                    if request.update_data.HasField('radius'):
+                        if not check_is_numeric_positive_list([request.update_data.radius]):
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                        else:
+                            update_data["radius"] = request.update_data.radius
+
+                    if request.update_data.HasField('scale'):
+                        if not check_is_numeric_positive_list([request.update_data.radius]):
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                        else:
+                            update_data["radius"] = request.update_data.radius
+
+                    if request.update_data.HasField('processedByMemberId'):
+                        if not check_is_numeric_positive_list(processedByMemberIds):
+                            error_messages.append(
+                                'Error: some <processedByMemberId> values are not integers or are negative.')
+                        else:     
+                            if not session.query(project_members).filter(or_(project_members.c.id.in_(
+                                [request.projectId]))).count():
+                                error_messages.append(
+                                    f'Error: No matching records found for processedByMemberId {request.update_data.processedByMemberId}.')
+                            else:
+                                update_data["proceddedByMemberId"] = request.update_data.processedByMemberId
                 else:
-                    result = {"success": False,
-                              "message": ["No parameters to update."]}
-        except Exception as ex:
-            result = {"success": False, "message": [str(ex)]}
+                    error_messages.append('Error: No update data provided.')
 
-        return anomalies_pb2.UpdateAnomaliesResponse(**result)
+                #if not session.query(anomalies).join(projects, anomalies.projectid == projects.id).filter(or_(*conditions)).count():
+                #    return anomalies_pb2.UpdateAnomaliesResponse(success=False, message=["No matching records found."])
 
+                if error_messages:
+                    result = {"success": False, "message": error_messages}
+                else:
+                    if any(update_data.values()):
+                        update_query = projects.update().where(or_(*conditions)).values(
+                            **{k: v for k, v in update_data.items() if v is not None}
+                        )
+                        session.execute(update_query)
+                        session.commit()
+                        result = {"success": True, "message": ["Record updated"]}
+                    else:
+                        result = {"success": False,
+                                "message": ["No parameters to update."]}
+      #  except Exception as ex:
+        #    result = {"success": False, "message": [str(ex)]}
+
+            return anomalies_pb2.UpdateAnomaliesResponse(**result)
+# не дає видалити бо залежне від кількох таблиць
     def DeleteRecordAnomalies(self, request, context):
         try:
             with Session() as session:
                 conditions = []
-                if request.id:
-                    conditions.append(projects.c.id.in_(request.id))
-                if request.projectId:
-                    conditions.append(
-                        projects.c.projectid.in_(request.projectid))
-                if request.timestamp:
-                    conditions.append(projects.c.timestamp.in_(
-                        datetime.fromisoformat(request.timestamp)))
-                if request.status:
-                    conditions.append(projects.c.status.in_(request.status))
-                if request.name:
-                    conditions.append(projects.c.name.in_(request.name))
-                if request.tags:
-                    conditions.append(projects.c.tags.in_(request.tags))
-                if request.description:
-                    conditions.append(
-                        projects.c.description.in_(request.description))
-                if request.radius:
-                    conditions.append(
-                        projects.c.radius.in_(request.radius))
-                if request.scale:
-                    conditions.append(
-                        projects.c.scale.in_(request.scale))
-                if request.processedByMemberId:
-                    conditions.append(
-                        projects.c.processedByMemberId.in_(request.processedByMemberId))
+                error_messages = []
+                if request.HasField('id'):
+                    ids = request.id.split(',')
+                    if ids:
+                        if check_is_numeric_positive_list(ids):
+                            conditions.append(projects.c.id.in_(ids))
+                        else:
+                            error_messages.append(
+                                'Error: some <id> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <id> has incorrect format.')
 
-                if not session.query(anomalies).filter(or_(*conditions)).count():
-                    return anomalies_pb2.DeleteAnomaliesResponse(success=False, message=["No matching records found."])
+                if request.HasField('projectId'):
+                    project_ids = request.projectId.split(',')
+                    if project_ids:
+                        if check_is_numeric_positive_list(project_ids):
+                            conditions.append(
+                                projects.c.id.in_(project_ids))
+                        else:
+                            error_messages.append(
+                                'Error: some <projectId> values are not integers.')
+                    else:
+                        error_messages.append(
+                            'Error: <projectId> has incorrect format.')
 
-                if conditions:
-                    delete_query = anomalies.delete().where(or_(*conditions))
-                    message = "Record deleted."
+                if request.HasField('timestamp'):
+                    timestamps = request.projectId.split(',')
+                    if timestamps:
+                        conditions.append(projects.c.timestamp.in_(
+                            datetime.fromisoformat(timestamps)))
+                    else:
+                        error_messages.append(
+                            'Error: <timestamp> has incorrect format.')
+
+                if request.HasField('status'):
+                    statuses = request.status.split(',')
+                    if statuses:
+                        if check_is_status_int_in_range(statuses):
+                            conditions.append(projects.c.status.in_(statuses))
+                        else:
+                            error_messages.append(
+                                'Error: <status> values are not integers or are not in (0, 1).')
+                    else:
+                        error_messages.append(
+                            'Error: <timestamp> has incorrect format.')
+
+                if request.HasField('name'):
+                    names = request.name.split(',')
+                    if names:
+                        if check_string_is_not_empty(names):
+                            conditions.append(projects.c.name.in_(names))
+                        else:
+                            error_messages.append(
+                                'Error: <name> values are empty or consist of whitespaces only.')
+                    else:
+                        error_messages.append(
+                            'Error: <name> has incorrect format.')
+
+                if request.HasField('tags'):
+                    tags = request.tags.split(',')
+                    if tags:
+                        if check_string_is_not_empty(tags):
+                            conditions.append(projects.c.tags.in_(tags))
+                        else:
+                            error_messages.append(
+                                'Error: <tags> values are empty or consist of whitespaces only.')
+                    else:
+                        error_messages.append(
+                            'Error: <tags> has incorrect format.')
+
+                if request.HasField('description'):
+                    if check_string_is_not_empty([request.description]):
+                        conditions.append(
+                            projects.c.description.in_([request.description]))
+                    else:
+                        error_messages.append(
+                            'Error: <description> values are empty or consist of whitespaces only.')
+
+                if request.HasField('radius'):
+                    radiuses = request.radius.split(',')
+                    if radiuses:
+                        if check_is_numeric_positive_list(radiuses):
+                            conditions.append(
+                                projects.c.radius.in_(radiuses))
+                        else:
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <radius> has incorrect format.')
+
+                if request.HasField('scale'):
+                    scales = request.scale.split(',')
+                    if scales:
+                        if check_is_numeric_positive_list(scales):
+                            conditions.append(
+                                projects.c.scale.in_(scales))
+                        else:
+                            error_messages.append(
+                                'Error: some <radius> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <radius> has incorrect format.')
+
+                if request.HasField('processedByMemberId'):
+                    processedByMemberIds = request.processedByMemberId.split(
+                        ',')
+                    if processedByMemberIds:
+                        if check_is_numeric_positive_list(processedByMemberIds):
+                            conditions.append(
+                                projects.c.processedByMemberId.in_(processedByMemberIds))
+                        else:
+                            error_messages.append(
+                                'Error: some <processedByMemberId> values are not integers or are negative.')
+                    else:
+                        error_messages.append(
+                            'Error: <processedByMemberId> has incorrect format.')
+
+                if error_messages:
+                    result = {"success": True, "message": error_messages}
                 else:
-                    delete_query = anomalies.delete()
-                    message = "Records deleted."
-                session.execute(delete_query)
-                session.commit()
-                result = {"success": True, "message": [message]}
+                   # if not session.query(anomalies).filter(or_(*conditions)).count():
+                   #     return anomalies_pb2.DeleteAnomaliesResponse(success=False, message=["No matching records found."])
+                    if conditions:
+                        delete_query = anomalies.delete().where(or_(*conditions))
+                        message = "Record deleted."
+                    else:
+                        delete_query = anomalies.delete()
+                        message = "Records deleted."
+                    session.execute(delete_query)
+                    session.commit()
+                    result = {"success": True, "message": [message]}
         except Exception as ex:
             result = {"success": False, "message": [str(ex)]}
 
-        return anomalies_pb2.DeleteProjectsResponse(**result)
+        return anomalies_pb2.DeleteAnomaliesResponse(**result)

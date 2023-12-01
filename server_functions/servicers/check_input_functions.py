@@ -80,7 +80,7 @@ def check_id_in_table(session, tables):
 
 def check_required_fields(request, fields):
     for i in fields:
-        if not request.HasField(i):
+       if not request.HasField(i):
             return False, i
     return True, ''
 

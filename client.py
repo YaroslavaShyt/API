@@ -6,10 +6,6 @@ from client_functions.raw_files import *
 import pandas as pd
 
 
-def read_csv_file(file_path):
-    df = pd.read_csv(file_path)
-    csv_content = df.to_csv(index=False)
-    return bytes(csv_content, 'utf-8')
 
 
 async def run() -> None:
@@ -21,7 +17,7 @@ async def run() -> None:
             stub, {"projectId": 4,
                    "data": "5b3ad3145fd1518a9f8742c5fa850b60a6b82774e47bf8edf3d1ffc0d339701b".encode('utf-8'),
                    "status": 0,
-                   "name": "Name",
+                   #"name": "Name",
                    "tags": "tags",
                    "description": "test project 1",
                    "radius": 3,
@@ -95,10 +91,10 @@ async def run() -> None:
         print(delete_result)
 
         
-        
-
-        
-
+  def read_csv_file(file_path):
+    df = pd.read_csv(file_path)
+    csv_content = df.to_csv(index=False)
+    return bytes(csv_content, 'utf-8')
 
         stub = raw_files_pb2_grpc.RawFilesServiceStub(channel)
         print(f"Create record raw files:")

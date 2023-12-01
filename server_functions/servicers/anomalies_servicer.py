@@ -9,7 +9,6 @@ Session = sessionmaker(bind=engine)
 
 class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
     def __init__(self):
-        super().__init__()
         self.required_fields    = ['projectId', 'data', 'status','name', 'tags', 'radius', 'scale', 'processedByMemberId']
         self.string_fields      = ['name', 'tags', 'data']
         self.integer_fields     = ['projectId', 'status', 'radius', 'scale']
@@ -17,13 +16,14 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
 
     def CreateRecordAnomalies(self, request, context):
         # define field types for better check-outs
-
         try:
             # check if all required fields were given
             success, field_name = check_required_fields(
                 request, self.required_fields)
             if not success:
-                return anomalies_pb2.CreateAnomaliesResponse({"success": success, "message": [f'Error: <{field_name}> is required but not provided.']})
+                data = {"success": success, "message": [
+                    f'Error: <{field_name}> is required but not provided.']}
+                return anomalies_pb2.CreateAnomaliesResponse(**data)
 
             # <description> is not required
             if request.HasField('description'):
@@ -33,19 +33,25 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
             success, field_name = check_string_fields(
                 request, self.string_fields)
             if not success:
-                return anomalies_pb2.CreateAnomaliesResponse({"success": success, "message": [f'Error: <{field_name}> cannot be empty or include whitespaces only.']})
+                data = {"success": success, "message": [
+                    f'Error: <{field_name}> cannot be empty or include whitespaces only.']}
+                return anomalies_pb2.CreateAnomaliesResponse(**data)
 
             # check integer values > 0
             success, field_name = check_integer_fields(
                 request, self.integer_fields)
             if not success:
-                return anomalies_pb2.CreateAnomaliesResponse({"success": success, "message": [f'Error: <{field_name}> cannot be below zero.']})
+                data = {"success": success, "message": [
+                    f'Error: <{field_name}> cannot be below zero.']}
+                return anomalies_pb2.CreateAnomaliesResponse(**data)
 
             # check if value in allowed range
             success, field_name = check_integer_in_range(
                 request.status, (0, 1))
             if not success:
-                return anomalies_pb2.CreateAnomaliesResponse({"success": False, "message": ['Error: <status> cannot be "{request.status}". Only allowed values - 0 or 1']})
+                data = {"success": False, "message": [
+                    'Error: <status> cannot be "{request.status}". Only allowed values - 0 or 1']}
+                return anomalies_pb2.CreateAnomaliesResponse(**data)
 
             with Session() as session:
                 # check if database values exist
@@ -59,7 +65,9 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                     elif field_name == project_members:
                         field_name = 'processedByMemberId'
                     field_value = getattr(request, field_name, None)
-                    return anomalies_pb2.CreateAnomaliesResponse({"success": success, "message": [f"No matching records found for {field_name} <{field_value}>."]})
+                    data = {"success": success, "message": [
+                        f"No matching records found for {field_name} <{field_value}>."]}
+                    return anomalies_pb2.CreateAnomaliesResponse(**data)
 
                 # do insert query
                 new_record = anomalies.insert().values(
@@ -157,6 +165,15 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
             result = {"success": False, "message": [str(ex)]}
 
         return anomalies_pb2.DeleteAnomaliesResponse(**result)
+
+
+
+
+
+
+
+
+
 
 
 def build_conditions(request):

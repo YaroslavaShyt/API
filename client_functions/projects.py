@@ -79,19 +79,19 @@ async def create_record_projects(stub, data):
 
 
 async def read_record_projects(stub, data):
-    error_messages = check_projects_data(data)
-    if error_messages:
-        return {"success": False, "message": error_messages}
-    else:
+    #error_messages = check_projects_data(data)
+    #if error_messages:
+    #    return {"success": False, "message": error_messages}
+    #else:
         response = await stub.ReadRecordProjects(projects_pb2.ReadProjectsRequest(**data))
         return response
 
 
 async def update_record_projects(stub, data):
-    error_messages = check_projects_data(data)
-    if error_messages:
-        return {"success": False, "message": error_messages}
-    else:
+   # error_messages = check_projects_data(data)
+    #if error_messages:
+     #   return {"success": False, "message": error_messages}
+    #else:
         response = await stub.UpdateRecordProjects(projects_pb2.UpdateProjectsRequest(**data))
         return response
 

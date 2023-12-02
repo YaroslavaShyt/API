@@ -2,69 +2,62 @@ from datetime import datetime
 from utils.imports import projects_pb2_grpc, sessionmaker, projects_pb2, or_
 from database.engine import engine
 from database.tables import projects
-
+from server_functions.servicers.check_input_functions import *
 Session = sessionmaker(bind=engine)
 
 
 class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
+    def __init__(self):
+        self.required_fields = ['name', 'description', 'status']
+        self.string_fields = ['name', 'description']
+        self.numeric_fields = ['status']
+    
     def CreateRecordProjects(self, request, context):
-        error_messages = []
         try:
+            # check required fields
+            success, field_name = check_required_fields(request, self.required_fields)
+            if not success:
+                data = {"success": success, "message": [f'Error: <{field_name}> is required but not provided.']}
+                return projects_pb2.CreateProjectsResponse(**data)
+            
+            # check if string fields are not empty
+            success, field_name = check_string_fields(request, self.string_fields)
+            if not success:
+                data = {"success": success, "message": [
+                    f'Error: <{field_name}> cannot be empty or include whitespaces only.']}
+                return projects_pb2.CreateProjectsResponse(**data)
+            
+            # check if value in allowed range
+            success, field_name = check_integer_in_range(request.status, (0, 1))
+            if not success:
+                data = {"success": False, "message": [
+                    f'Error: <status> cannot be {request.status}. Only allowed values - 0 or 1']}
+                return projects_pb2.CreateProjectsResponse(**data)
+        
             with Session() as session:
-                # check <Name>
-                if not request.name or not request.name.strip():
-                    error_messages.append('Error: <Name> cannot be empty or include whitespaces only.')
-
-                # check <Description>
-                if not request.description or not request.description.strip():
-                    error_messages.append(
-                        'Error: <Description> cannot be empty or include whitespaces only.')
-                    
-                # check <Status>
-                if request.status not in (0, 1):
-                    error_messages.append(
-                        f'Error: <Status> cannot be "{request.status}". Only allowed values - 0 or 1')
-                    
-                # if errors - do not do database query
-                if error_messages:
-                    result = {"success": False, "message": error_messages}
-                else:
-                    # if no messages - do database query
-                    new_record = projects.insert().values(
-                        name=request.name,
-                        description=request.description,
-                        status=request.status
-                    )
-                    session.execute(new_record)
-                    session.commit()
-                    result = {"success": True, "message": ["Record created"]}
+                # do database query
+                new_record = projects.insert().values(
+                    name=request.name,
+                    description=request.description,
+                    status=request.status
+                )
+                session.execute(new_record)
+                session.commit()
+                result = {"success": True, "message": ["Record created"]}
         except Exception as e:
             result = {"success": False, "message": [str(e)]}
         return projects_pb2.CreateProjectsResponse(**result)
 
     def ReadRecordProjects(self, request, context):
-        try:
+     #   try:
             with Session() as session:
                 conditions = []
-                if request.id:
-                    conditions.append(projects.c.id.in_(request.id))
-                if request.name:
-                    conditions.append(projects.c.name.in_(request.name))
-                if request.description:
-                    conditions.append(
-                        projects.c.description.in_(request.description))
-                if request.timestamp:
-                    conditions.append(projects.c.timestamp.in_(
-                        datetime.fromisoformat(request.timestamp)))
-                if request.status:
-                    conditions.append(projects.c.status.in_(request.status))
+                conditions, error_messages = build_conditions(request)
 
-                if not conditions:
-                    # If no conditions - fetch all records
-                    results = session.query(projects).all()
-                else:
-                    # If conditions - filter the records
-                    results = session.query(projects).filter(or_(*conditions)).all()
+                if error_messages:
+                    return projects_pb2.ReadProjectsResponse({"success": False, "message": error_messages})
+
+                results = build_query(session, conditions)
 
                 if results:
                     data = {
@@ -79,9 +72,9 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
                     }
                 else:
                     data = {"success": False, "message": ["No results"]}
-        except Exception as ex:
-            data = {"success": False, "message": [str(ex)]}
-        return projects_pb2.ReadProjectsResponse(**data)
+      #  except Exception as ex:
+      #      data = {"success": False, "message": [str(ex)]}
+            return projects_pb2.ReadProjectsResponse(**data)
     
 
     def UpdateRecordProjects(self, request, context):
@@ -163,6 +156,48 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
 
         return projects_pb2.DeleteProjectsResponse(**result)
 
+
+def build_conditions(request):
+    conditions = []
+
+    def add_condition(field, values, check_func=None):
+        if request.HasField(field):
+            field_values = getattr(request, field).split(',')
+            if field_values and check_func(field_values):
+                conditions.append(values.in_(field_values))
+            else:
+                error_messages.append(
+                    f'Error: <{field}> has incorrect format.')
+
+    error_messages = []
+
+    add_condition('id', projects.c.id, check_is_numeric_positive_list)
+    if request.HasField('name'):
+        field_values = request.name.split(',')
+        success, field_name = check_string_fields(request=request, fields=field_values)
+        if  success == True:
+            conditions.append(projects.c.name.in_(field_values))
+        else:
+            error_messages.append(
+                f'Error: <{field_name}> has incorrect format.')
+    if request.HasField('description'):
+        field_values = request.name.split(',')
+        success, field_name = check_string_fields(
+            request=request, fields=field_values)
+        if success == True:
+            conditions.append(projects.c.description.in_(field_values))
+        else:
+            error_messages.append(
+                f'Error: <{field_name}> has incorrect format.')          
+    add_condition('timestamp', projects.c.timestamp, check_is_valid_timestamp)
+    add_condition('status', projects.c.status, check_is_status_int_in_range)
+    return conditions, error_messages
+
+
+def build_query(session, conditions):
+    if not conditions:
+        return session.query(projects).all()
+    return session.query(projects).filter(or_(*conditions)).all()
 
 """
 error_messages = []

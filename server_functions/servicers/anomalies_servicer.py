@@ -9,13 +9,14 @@ Session = sessionmaker(bind=engine)
 
 class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
     def __init__(self):
+        # define field types for better check-outs
         self.required_fields    = ['projectId', 'data', 'status','name', 'tags', 'radius', 'scale', 'processedByMemberId']
         self.string_fields      = ['name', 'tags', 'data']
         self.integer_fields     = ['projectId', 'status', 'radius', 'scale']
         self.other_table_values = {projects: None, project_members: None}
 
     def CreateRecordAnomalies(self, request, context):
-        # define field types for better check-outs
+       
         try:
             # check if all required fields were given
             success, field_name = check_required_fields(
@@ -50,7 +51,7 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                 request.status, (0, 1))
             if not success:
                 data = {"success": False, "message": [
-                    'Error: <status> cannot be "{request.status}". Only allowed values - 0 or 1']}
+                    'Error: <status> cannot be "<<{request.status}>>". Only allowed values - 0 or 1']}
                 return anomalies_pb2.CreateAnomaliesResponse(**data)
 
             with Session() as session:
@@ -116,6 +117,7 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                             "scale": result.scale,
                             "processedByMemberId": result.processedByMemberId
                         } for result in results]}
+                    
                 else:
                     data = {"success": False, "message": ["No results"]}
         except Exception as ex:
@@ -257,3 +259,61 @@ def execute_delete_query(session, conditions):
     delete_query = anomalies.delete().where(or_(*conditions))
     session.execute(delete_query)
     session.commit()
+
+
+def validate_update_data(update_data, error_messages, update_data_dict):
+    if update_data.HasField('name'):
+        if not check_string_is_not_empty(update_data.name):
+            error_messages.append(
+                'Error: <name> values are empty or consist of whitespaces only.')
+        else:
+            update_data_dict["name"] = update_data.name
+
+    # Validate other fields and add to update_data_dict as needed
+    if update_data.HasField('data'):
+        update_data_dict["data"] = update_data.data
+
+    if update_data.HasField('status'):
+        if not check_is_status_int_in_range([update_data.status]):
+            error_messages.append(
+                'Error: <status> values are not integers or are not in (0, 1).')
+        else:
+            update_data_dict["status"] = update_data.status
+
+    if update_data.HasField('tags'):
+        if not check_string_is_not_empty(update_data.tags):
+            error_messages.append(
+                'Error: <tags> values are empty or consist of whitespaces only.')
+        else:
+            update_data_dict["tags"] = update_data.tags
+
+    if update_data.HasField('description'):
+        if not check_string_is_not_empty(update_data.description):
+            error_messages.append(
+                'Error: <description> values are empty or consist of whitespaces only.')
+        else:
+            update_data_dict["description"] = update_data.description
+
+    if update_data.HasField('radius'):
+        if not check_is_numeric_positive_list([update_data.radius]):
+            error_messages.append(
+                'Error: some <radius> values are not integers or are negative.')
+        else:
+            update_data_dict["radius"] = update_data.radius
+
+    if update_data.HasField('scale'):
+        if not check_is_numeric_positive_list([update_data.scale]):
+            error_messages.append(
+                'Error: some <scale> values are not integers or are negative.')
+        else:
+            update_data_dict["scale"] = update_data.scale
+
+    if update_data.HasField('processedByMemberId'):
+        if not check_is_numeric_positive_list([update_data.processedByMemberId]):
+            error_messages.append(
+                'Error: some <processedByMemberId> values are not integers or are negative.')
+        else:
+            update_data_dict["processedByMemberId"] = update_data.processedByMemberId
+
+    if not any(update_data_dict.values()):
+        error_messages.append('Error: No parameters to update.')

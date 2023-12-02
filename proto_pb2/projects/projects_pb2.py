@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n!proto_pb2/projects/projects.proto\"J\n\x15\x43reateProjectsRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\x05\":\n\x16\x43reateProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t\"g\n\x13ReadProjectsRequest\x12\n\n\x02id\x18\x01 \x03(\x03\x12\x0c\n\x04name\x18\x02 \x03(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x03(\t\x12\x11\n\ttimestamp\x18\x04 \x03(\t\x12\x0e\n\x06status\x18\x05 \x03(\x05\"V\n\x14ReadProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t\x12\x1c\n\x04\x64\x61ta\x18\x03 \x03(\x0b\x32\x0e.ProjectObject\"a\n\rProjectObject\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x11\n\ttimestamp\x18\x04 \x01(\t\x12\x0e\n\x06status\x18\x05 \x01(\x05\"\x8d\x01\n\x15UpdateProjectsRequest\x12\n\n\x02id\x18\x01 \x03(\x03\x12\x0c\n\x04name\x18\x02 \x03(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x03(\t\x12\x11\n\ttimestamp\x18\x04 \x03(\t\x12\x0e\n\x06status\x18\x05 \x03(\x05\x12\"\n\x0bupdate_data\x18\x06 \x01(\x0b\x32\r.UpdateObject\"A\n\x0cUpdateObject\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\x05\":\n\x16UpdateProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t\"i\n\x15\x44\x65leteProjectsRequest\x12\n\n\x02id\x18\x01 \x03(\x03\x12\x0c\n\x04name\x18\x02 \x03(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x03(\t\x12\x11\n\ttimestamp\x18\x04 \x03(\t\x12\x0e\n\x06status\x18\x05 \x03(\x05\":\n\x16\x44\x65leteProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t2\xaf\x02\n\x0fProjectsService\x12G\n\x14\x43reateRecordProjects\x12\x16.CreateProjectsRequest\x1a\x17.CreateProjectsResponse\x12\x41\n\x12ReadRecordProjects\x12\x14.ReadProjectsRequest\x1a\x15.ReadProjectsResponse\x12G\n\x14UpdateRecordProjects\x12\x16.UpdateProjectsRequest\x1a\x17.UpdateProjectsResponse\x12G\n\x14\x44\x65leteRecordProjects\x12\x16.DeleteProjectsRequest\x1a\x17.DeleteProjectsResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n!proto_pb2/projects/projects.proto\"}\n\x15\x43reateProjectsRequest\x12\x11\n\x04name\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06status\x18\x03 \x01(\x05H\x02\x88\x01\x01\x42\x07\n\x05_nameB\x0e\n\x0c_descriptionB\t\n\x07_status\":\n\x16\x43reateProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t\"\xb9\x01\n\x13ReadProjectsRequest\x12\x0f\n\x02id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x11\n\x04name\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x02\x88\x01\x01\x12\x16\n\ttimestamp\x18\x04 \x01(\tH\x03\x88\x01\x01\x12\x13\n\x06status\x18\x05 \x01(\tH\x04\x88\x01\x01\x42\x05\n\x03_idB\x07\n\x05_nameB\x0e\n\x0c_descriptionB\x0c\n\n_timestampB\t\n\x07_status\"V\n\x14ReadProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t\x12\x1c\n\x04\x64\x61ta\x18\x03 \x03(\x0b\x32\x0e.ProjectObject\"a\n\rProjectObject\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x11\n\ttimestamp\x18\x04 \x01(\t\x12\x0e\n\x06status\x18\x05 \x01(\x05\"\xf4\x01\n\x15UpdateProjectsRequest\x12\x0f\n\x02id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x11\n\x04name\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x02\x88\x01\x01\x12\x16\n\ttimestamp\x18\x04 \x01(\tH\x03\x88\x01\x01\x12\x13\n\x06status\x18\x05 \x01(\tH\x04\x88\x01\x01\x12\'\n\x0bupdate_data\x18\x06 \x01(\x0b\x32\r.UpdateObjectH\x05\x88\x01\x01\x42\x05\n\x03_idB\x07\n\x05_nameB\x0e\n\x0c_descriptionB\x0c\n\n_timestampB\t\n\x07_statusB\x0e\n\x0c_update_data\"t\n\x0cUpdateObject\x12\x11\n\x04name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06status\x18\x04 \x01(\x05H\x02\x88\x01\x01\x42\x07\n\x05_nameB\x0e\n\x0c_descriptionB\t\n\x07_status\":\n\x16UpdateProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t\"\xbb\x01\n\x15\x44\x65leteProjectsRequest\x12\x0f\n\x02id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x11\n\x04name\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x03 \x01(\tH\x02\x88\x01\x01\x12\x16\n\ttimestamp\x18\x04 \x01(\tH\x03\x88\x01\x01\x12\x13\n\x06status\x18\x05 \x01(\tH\x04\x88\x01\x01\x42\x05\n\x03_idB\x07\n\x05_nameB\x0e\n\x0c_descriptionB\x0c\n\n_timestampB\t\n\x07_status\":\n\x16\x44\x65leteProjectsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x03(\t2\xaf\x02\n\x0fProjectsService\x12G\n\x14\x43reateRecordProjects\x12\x16.CreateProjectsRequest\x1a\x17.CreateProjectsResponse\x12\x41\n\x12ReadRecordProjects\x12\x14.ReadProjectsRequest\x1a\x15.ReadProjectsResponse\x12G\n\x14UpdateRecordProjects\x12\x16.UpdateProjectsRequest\x1a\x17.UpdateProjectsResponse\x12G\n\x14\x44\x65leteRecordProjects\x12\x16.DeleteProjectsRequest\x1a\x17.DeleteProjectsResponseb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'proto_pb2.projects.projects_pb2', globals())
@@ -21,25 +21,25 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _CREATEPROJECTSREQUEST._serialized_start=37
-  _CREATEPROJECTSREQUEST._serialized_end=111
-  _CREATEPROJECTSRESPONSE._serialized_start=113
-  _CREATEPROJECTSRESPONSE._serialized_end=171
-  _READPROJECTSREQUEST._serialized_start=173
-  _READPROJECTSREQUEST._serialized_end=276
-  _READPROJECTSRESPONSE._serialized_start=278
-  _READPROJECTSRESPONSE._serialized_end=364
-  _PROJECTOBJECT._serialized_start=366
-  _PROJECTOBJECT._serialized_end=463
-  _UPDATEPROJECTSREQUEST._serialized_start=466
-  _UPDATEPROJECTSREQUEST._serialized_end=607
-  _UPDATEOBJECT._serialized_start=609
-  _UPDATEOBJECT._serialized_end=674
-  _UPDATEPROJECTSRESPONSE._serialized_start=676
-  _UPDATEPROJECTSRESPONSE._serialized_end=734
-  _DELETEPROJECTSREQUEST._serialized_start=736
-  _DELETEPROJECTSREQUEST._serialized_end=841
-  _DELETEPROJECTSRESPONSE._serialized_start=843
-  _DELETEPROJECTSRESPONSE._serialized_end=901
-  _PROJECTSSERVICE._serialized_start=904
-  _PROJECTSSERVICE._serialized_end=1207
+  _CREATEPROJECTSREQUEST._serialized_end=162
+  _CREATEPROJECTSRESPONSE._serialized_start=164
+  _CREATEPROJECTSRESPONSE._serialized_end=222
+  _READPROJECTSREQUEST._serialized_start=225
+  _READPROJECTSREQUEST._serialized_end=410
+  _READPROJECTSRESPONSE._serialized_start=412
+  _READPROJECTSRESPONSE._serialized_end=498
+  _PROJECTOBJECT._serialized_start=500
+  _PROJECTOBJECT._serialized_end=597
+  _UPDATEPROJECTSREQUEST._serialized_start=600
+  _UPDATEPROJECTSREQUEST._serialized_end=844
+  _UPDATEOBJECT._serialized_start=846
+  _UPDATEOBJECT._serialized_end=962
+  _UPDATEPROJECTSRESPONSE._serialized_start=964
+  _UPDATEPROJECTSRESPONSE._serialized_end=1022
+  _DELETEPROJECTSREQUEST._serialized_start=1025
+  _DELETEPROJECTSREQUEST._serialized_end=1212
+  _DELETEPROJECTSRESPONSE._serialized_start=1214
+  _DELETEPROJECTSRESPONSE._serialized_end=1272
+  _PROJECTSSERVICE._serialized_start=1275
+  _PROJECTSSERVICE._serialized_end=1578
 # @@protoc_insertion_point(module_scope)

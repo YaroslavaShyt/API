@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+service LinksService{
+  rpc CreateRecordLinks (CreateLinksRequest) returns (CreateLinksResponse);
+  rpc ReadRecordLinks   (ReadLinksRequest)   returns (ReadLinksResponse);
+  rpc UpdateRecordLinks (UpdateLinksRequest) returns (UpdateLinksResponse);
+  rpc DeleteRecordLinks (DeleteLinksRequest) returns (DeleteLinksResponse);
+
+}
+
+message CreateLinksRequest {
+  optional int64 project_id = 1;
+  optional string token = 2;
+  optional string expires = 3;
+  optional string status = 4;
+}
+
+message CreateLinksResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message ReadLinksRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string token = 3;
+  optional string expires = 4;
+  optional string status = 5;
+}
+
+message ReadLinksResponse {
+  string status = 1;
+  bool success = 2;
+  repeated LinksObject data = 3;
+}
+
+message LinksObject{
+  string id = 1;
+  string project_id = 2;
+  string token = 3;
+  string expires = 4;
+  string status = 5;
+}
+
+
+message UpdateLinksRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string token = 3;
+  optional string expires = 4;
+  optional string status = 5;
+  optional LinksObject update_data = 6;
+}
+
+message UpdateLinksResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message DeleteLinksRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string token = 3;
+  optional string expires = 4;
+  optional string status = 5;
+}
+
+message DeleteLinksResponse {
+  bool success = 1;
+  string message = 2;
+}

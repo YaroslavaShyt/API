@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+service ProjectMembersService{
+  rpc CreateRecordProjectMembers (CreateProjectMembersRequest) returns (CreateProjectMembersResponse);
+  rpc ReadRecordProjectMembers   (ReadProjectMembersRequest)   returns (ReadProjectMembersResponse);
+  rpc UpdateRecordProjectMembers (UpdateProjectMembersRequest) returns (UpdateProjectMembersResponse);
+  rpc DeleteRecordProjectMembers (DeleteProjectMembersRequest) returns (DeleteProjectMembersResponse);
+
+}
+
+message CreateProjectMembersRequest {
+  optional int64 project_id = 1;
+  optional int64 userId = 2;
+  optional int32 permissionId = 3;
+}
+
+message CreateProjectMembersResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message ReadProjectMembersRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string userId = 3;
+  optional string permissionId = 4;
+  optional string joinedAt = 5;
+}
+
+message ReadProjectMembersResponse {
+  string status = 1;
+  bool success = 2;
+  repeated ProjectMembersObject data = 3;
+}
+
+message ProjectMembersObject{
+  int64 id = 1;
+  int64 project_id = 2;
+  int64 userId = 3;
+  int32 permissionId = 4;
+  string joinedAt = 5;
+}
+
+
+message UpdateProjectMembersRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string userId = 3;
+  optional string permissionId = 4;
+  optional string joinedAt = 5;
+  optional ProjectMembersObject update_data = 6;
+}
+
+message UpdateProjectMembersResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message DeleteProjectMembersRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string userId = 3;
+  optional string permissionId = 4;
+  optional string joinedAt = 5;
+}
+
+message DeleteProjectMembersResponse {
+  bool success = 1;
+  string message = 2;
+}

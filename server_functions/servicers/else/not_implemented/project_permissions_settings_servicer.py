@@ -1,2 +1,0 @@
-class ProjectPermissionsSettingsServicer:
-    pass

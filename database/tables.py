@@ -48,13 +48,16 @@ anomalies = Table('v_Anomalies', metadata,
                   )
 
 
-raw_files = Table('v_Rawfiles', metadata,
-                  Column('id', Integer, primary_key=True, autoincrement=True),
-                  Column('projectid', Integer, ForeignKey("projects.id")),
-                  Column('data', BINARY),
-                  Column('timestamp', DATETIME),
-                  Column('status', Integer)
-                  )
+files = Table('v_Rawfiles', metadata,
+              Column('id', Integer, primary_key=True, autoincrement=True),
+              Column('projectid', Integer, ForeignKey("projects.id")),
+              Column('data', BINARY),
+              Column('timestamp', DATETIME),
+              Column('status', Integer),
+              Column('description', String(200), default='No information'),
+              Column('processedByMemberId', Integer,
+                     ForeignKey("projectMembers.id"))
+              )
 
 
 links = Table('v_Links', metadata,

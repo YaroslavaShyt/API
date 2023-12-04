@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+
+service FilesService {
+  rpc CreateFilesRecord (CreateFilesRequest) returns (CreateFilesResponse);
+  rpc ReadFilesRecord (ReadFilesRequest) returns (ReadFilesResponse);
+  rpc UpdateFilesRecord (UpdateFilesRequest) returns (UpdateFilesResponse);
+  rpc DeleteFilesRecord (DeleteFilesRequest) returns (DeleteFilesResponse);
+}
+
+message CreateFilesRequest {
+  optional int64 project_id = 1;
+  optional bytes data = 2;
+  optional int32 status = 3;
+  optional int64 timestamp = 4;
+  optional string description = 5;
+  optional int64 processedByMemberId = 6;
+}
+
+message CreateFilesResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message ReadFilesRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string data = 3;
+  optional string status = 4;
+  optional string timestamp = 5;
+  optional string description = 6;
+  optional string processedByMemberId = 7;
+}
+
+message ReadFilesResponse {
+  bool success = 1;
+  string message = 2;
+  repeated FilesObject data = 3;
+}
+
+message FilesObject{
+  int64 id = 1;
+  int64 project_id = 2;
+  bytes data = 3;
+  int32 status = 4;
+  int64 timestamp = 5;
+  string description = 6;
+  int64 processedByMemberId = 7;
+}
+
+message UpdateFilesRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string data = 3;
+  optional string status = 4;
+  optional string timestamp = 5;
+  optional string description = 6;
+  optional string processedByMemberId = 7;
+  optional FilesObject update_data = 8;
+}
+
+message UpdateFilesResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message DeleteFilesRequest {
+  optional string id = 1;
+  optional string project_id = 2;
+  optional string data = 3;
+  optional string status = 4;
+  optional string timestamp = 5;
+  optional string description = 6;
+  optional string processedByMemberId = 7;
+}
+
+message DeleteFilesResponse {
+  bool success = 1;
+  string message = 2;
+}

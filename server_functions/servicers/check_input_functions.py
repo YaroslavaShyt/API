@@ -35,6 +35,11 @@ def check_string_fields(request, fields):
             return False, field_name
     return True, ''
 
+def check_string_lists(fields):
+    for field_name in fields:
+        if not field_name or not field_name.strip():
+            return False, field_name
+    return True, ''
 
 def check_integer_fields(request, fields):
     for field_name in fields:

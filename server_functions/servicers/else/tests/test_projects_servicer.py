@@ -11,109 +11,178 @@ class TestProjectServicer(unittest.TestCase):
     def setUp(self):
         self.servicer = ProjectServicer()
 
-    @patch('proto_pb2.projects.projects_pb2.DeleteProjectsRequest')
-    def test_delete_record_projects(self, DeleteProjectsRequest_mock):
-        # correct data (id in table)
-        DeleteProjectsRequest_mock.return_value = {
-            "success": True, "message": ["Record deleted."]}
-        response = DeleteProjectsRequest_mock()
-        # check response parameters
-        self.assertTrue(response["success"])
-        self.assertEqual(response["message"][0], "Record deleted.")
-        # incorrect data (id not in table)
-       # request = DeleteProjectsRequest(id=[1])
-       # response = self.servicer.UpdateRecordProjects(request, context)
-        # check response parameters
-        #self.assertFalse(response.success)
-        #self.assertEqual(response.message[0], "No matching records found.")
-
-
-"""
-    def test_update_record_projects(self):  
-        # correct data   
-        request = UpdateProjectsRequest(
-            id=[10], update_data={"name": "Updated Name"})
-        context = MagicMock()
-        response = self.servicer.UpdateRecordProjects(request, context)
-            # check response parameters
-        self.assertTrue(response.success)
-        self.assertEqual(response.message[0], "Record updated")
-
-        # incorrect data (id not in table)
-        request = UpdateProjectsRequest(
-            id=[1], update_data={"name": "Updated Name"})
-        context = MagicMock()
-        response = self.servicer.UpdateRecordProjects(request, context)
-            # check response parameters
-        self.assertFalse(response.success)
-        self.assertEqual(response.message[0], "No matching records found.")
-
-
-    def test_read_record_projects(self): 
-        # correct data 
-        context = MagicMock()
-        request = ReadProjectsRequest(id=[4, 5, 6])
-        response = self.servicer.ReadRecordProjects(request, context)
-            # check response parameters
-        self.assertTrue(response.success)
-        for i in response.data:
-            self.assertIsInstance(i.name, str)
-            self.assertIsInstance(i.description, str)
-            self.assertIsInstance(i.status, int)
-
-        # incorrect data 
-        request = ReadProjectsRequest(id=[1])
-        response = self.servicer.ReadRecordProjects(request, context)
-            # check response parameters
-        self.assertFalse(response.success)
-
-    # test CreateRecordProjects: name(str), description(str), status(int)
     def test_create_record_projects(self):
-      #  try:
-            # correct data
-            request = CreateProjectsRequest(
-                name="Project Name", description="Project Description", status=1)
-            context = MagicMock()
-            response = self.servicer.CreateRecordProjects(request, context)
-                # check response parameters
-            self.assertTrue(response.success)
-            self.assertEqual(response.message[0], "Record created")
+        correct_test_data = [
+            CreateProjectsRequest(
+                name="Project Name", description="Project Description", status=1),
+            CreateProjectsRequest(
+                name="Project Name", description="Project Description", status=0),
+        ]
+        incorrect_test_data = [
+            # no data
+            CreateProjectsRequest(),
+            # not all data
+            CreateProjectsRequest(name='a'),
+            # empty name   | empty string
+            CreateProjectsRequest(
+                name='', description="Project Description", status=1),
+            # empty name   | whitespaces only
+            CreateProjectsRequest(
+                name='    ', description="Project Description", status=1),
+            # status not in range | 3 not in (0,1)
+            CreateProjectsRequest(
+                name="Project Name", description="Project Description", status=3),
+        ]
+        # test positive cases
+        for test in correct_test_data:
+            response = self.servicer.CreateRecordProjects(test)
+            # check response parameters
+            self.assertTrue(response["success"])
+            self.assertEqual(response["message"][0], "Record deleted")
 
-            # incorrect data
-            request = CreateProjectsRequest(
-                name="", description="", status=4)
-            context = MagicMock()
-            response = self.servicer.CreateRecordProjects(request, context)
-                # check response parameters
+        # test negative cases
+        for test in incorrect_test_data:
+            response = self.servicer.CreateRecordProjects(test)
+            # check response parameters
             self.assertFalse(response.success)
-           # self.assertEqual(response.message, context)
 
-           # not all required data
-            request = CreateProjectsRequest(
-                description="description", status=1)
-            context = MagicMock()
-            response = self.servicer.CreateRecordProjects(request, context)
-                # check response parameters
+    def test_read_record_projects(self):
+        correct_test_data = [
+            # correct id           | numeric, exists
+            ReadProjectsRequest({"id": '4'}),
+            # few correct ids      | numeric, exist
+            ReadProjectsRequest({"id": '4,9,10,11'}),
+            # correct name         | string, exists
+            ReadProjectsRequest({"id": 'noldname'}),
+            # few correct names    | string, exist
+            ReadProjectsRequest({"id": 'noldname, name'}),
+            # correct desc         | string, exist
+            ReadProjectsRequest({"description": 'newdescription'}),
+            # correct status       | numeric, exists
+            ReadProjectsRequest({"status": '0'}),
+            # correct statuses     | numeric, exist
+            ReadProjectsRequest({"status": '0,1'}),
+            # correct              | all records
+            ReadProjectsRequest(),
+        ]
+        incorrect_test_data = [
+            # incorrect id | numeric, not exists
+            ReadProjectsRequest(id='1'),
+            # incorrect id | non-numeric, not exists
+            ReadProjectsRequest(id='a'),
+            # empty name   | empty string
+            ReadProjectsRequest(name=''),
+            # empty name   | whitespaces only
+            ReadProjectsRequest(name='    '),
+            # incorrect timestamp | non-numeric
+            ReadProjectsRequest(timestamp='a'),
+            # status not in range | 2 not in (0,1)
+            ReadProjectsRequest(status='2'),
+            # statuses not in range | 2,3,4 not in (0,1)
+            ReadProjectsRequest(status='2,3,4')
+        ]
+
+        # test positive cases
+        for test in correct_test_data:
+            response = self.servicer.ReadRecordProjects(test)
+            # check response parameters
+            self.assertTrue(response["success"])
+            self.assertEqual(response["message"][0], "Record updated")
+
+        # test negative cases
+        for test in incorrect_test_data:
+            response = self.servicer.ReadRecordProjects(test)
+            # check response parameters
             self.assertFalse(response.success)
-    #    except Exception as ex:
-    #        print(f'CREATE RECORD PROJECTS: {ex}')
-
-   
-        
 
     def test_update_record_projects(self):
-        try:
-            request = UpdateProjectsRequest(
-                id=[10], update_data={"name": "Updated Name"})
-            context = MagicMock()
-            response = self.servicer.UpdateRecordProjects(request, context)
+        correct_conditions = [
+            UpdateProjectsRequest(
+                name="Project Name", description="Project Description", status=1),
+            UpdateProjectsRequest(
+                name="Project Name", description="Project Description", status=0),
+        ]
+        incorrect_conditions = [
+            # no data
+            UpdateProjectsRequest(),
+            # no update data parameter
+            UpdateProjectsRequest(name='name',),
+            # no update data
+            UpdateProjectsRequest(name='name', update_data={}),
+            # name not exists
+            UpdateProjectsRequest(name='a', update_data={"name": "newname"}),
+            # empty name   | empty string
+            UpdateProjectsRequest(
+                name='', description="Project Description", status=1, update_data={"name": "newname"}),
+            # empty name   | whitespaces only
+            UpdateProjectsRequest(
+                name='    ', description="Project Description", status=1, update_data={"name": "newname"}),
+            # status not in range | 3 not in (0,1)
+            UpdateProjectsRequest(status=3, update_data={"name": "newname"}),
+        ]
+        for test in correct_conditions:
+            response = self.servicer.UpdateRecordProjects(test)
             # check response parameters
             self.assertTrue(response.success)
-            self.assertEqual(response.message, "Record updated")
-        except Exception as ex:
-            print(f'UPDATE RECORD PROJECTS: {ex}')
+            self.assertEqual(response.message[0], "Record updated")
 
-    
+        for test in incorrect_conditions:
+            response = self.servicer.UpdateRecordProjects(test)
+            # check response parameters
+            self.assertFalse(response.success)
+       
+    def test_delete_record_projects(self):
+        correct_test_data = [
+            # correct id           | numeric, exists
+            DeleteProjectsRequest({"id": '4'}),
+            # few correct ids      | numeric, exist
+            DeleteProjectsRequest({"id": '4,9,10,11'}),
+            # correct name         | string, exists
+            DeleteProjectsRequest({"id": 'noldname'}),
+            # few correct names    | string, exist
+            DeleteProjectsRequest({"id": 'noldname, name'}),
+            # correct desc         | string, exist
+            DeleteProjectsRequest({"description": 'newdescription'}),
+            # correct status       | numeric, exists
+            DeleteProjectsRequest({"status": '0'}),
+            # correct statuses     | numeric, exist
+            DeleteProjectsRequest({"status": '0,1'}),
+            # correct              | all records
+            DeleteProjectsRequest(),
+        ]
+        incorrect_test_data = [
+            # incorrect id | numeric, not exists
+            DeleteProjectsRequest(id='1'),
+            # incorrect id | non-numeric, not exists
+            DeleteProjectsRequest(id='a'),
+            # empty name   | empty string
+            DeleteProjectsRequest(name=''),
+            # empty name   | whitespaces only
+            DeleteProjectsRequest(name='    '),
+            # incorrect timestamp | non-numeric
+            DeleteProjectsRequest(timestamp='a'),
+            # status not in range | 2 not in (0,1)
+            DeleteProjectsRequest(status='2'),
+            # statuses not in range | 2,3,4 not in (0,1)
+            DeleteProjectsRequest(status='2,3,4')
+        ]
+
+        # test positive cases
+        for test in correct_test_data:
+            response = self.servicer.DeleteRecordProjects(test)
+            # check response parameters
+            self.assertTrue(response["success"])
+            self.assertEqual(response["message"][0], "Record deleted.")
+
+         # test negative cases
+        for test in incorrect_test_data:
+            response = self.servicer.DeleteRecordProjects(test)
+            # check response parameters
+            self.assertFalse(response.success)
+            self.assertEqual(response.message[0], "No matching records found.")
+
+
+""" 
 """
 
 if __name__ == '__main__':

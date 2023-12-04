@@ -7,6 +7,7 @@ def check_data_params(param_name, list_type, data):
             return f"Error: invalid '{param_name}' value. Expected a non-empty list of {list_type}."
     return ''
 
+
 def check_projects_data(data):
     error_messages = []
     if not isinstance(data, dict):
@@ -79,21 +80,21 @@ async def create_record_projects(stub, data):
 
 
 async def read_record_projects(stub, data):
-    #error_messages = check_projects_data(data)
-    #if error_messages:
+    # error_messages = check_projects_data(data)
+    # if error_messages:
     #    return {"success": False, "message": error_messages}
-    #else:
-        response = await stub.ReadRecordProjects(projects_pb2.ReadProjectsRequest(**data))
-        return response
+    # else:
+    response = await stub.ReadRecordProjects(projects_pb2.ReadProjectsRequest(**data))
+    return response
 
 
 async def update_record_projects(stub, data):
    # error_messages = check_projects_data(data)
-    #if error_messages:
-     #   return {"success": False, "message": error_messages}
-    #else:
-        response = await stub.UpdateRecordProjects(projects_pb2.UpdateProjectsRequest(**data))
-        return response
+    # if error_messages:
+    #   return {"success": False, "message": error_messages}
+    # else:
+    response = await stub.UpdateRecordProjects(projects_pb2.UpdateProjectsRequest(**data))
+    return response
 
 
 async def delete_record_projects(stub, data):

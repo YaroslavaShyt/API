@@ -62,7 +62,7 @@ files = Table('v_Rawfiles', metadata,
 
 links = Table('v_Links', metadata,
               Column('id', Integer, primary_key=True, autoincrement=True),
-              Column('projectid', Integer, ForeignKey('projects.id')),
+              Column('projectId', Integer, ForeignKey('projects.id')),
               Column('token', String(256)),
               Column('expires', DATETIME),
               Column('status', String(255))

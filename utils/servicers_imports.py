@@ -1,6 +1,6 @@
 # servicers
 from server_functions.servicers.anomalies_servicer import AnomaliesServicer
-#from server_functions.servicers.not_implemented.links_servicer import LinksServicer
+from server_functions.servicers.links_servicer import LinksServicer
 #from server_functions.servicers.not_implemented.member_permissions_servicer import MemberPermissionsServicer
 #from server_functions.servicers.not_implemented.processed_files_servicer import ProcessedFilesServicer
 #from server_functions.servicers.not_implemented.project_members_servicer import ProjectMembersServicer

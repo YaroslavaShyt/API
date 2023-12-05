@@ -9,21 +9,21 @@ service LinksService{
 }
 
 message CreateLinksRequest {
-  optional int64 project_id = 1;
+  optional int64 projectId = 1;
   optional string token = 2;
   optional string expires = 3;
-  optional string status = 4;
+  optional int32 status = 4;
 }
 
 message CreateLinksResponse {
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
 }
 
 
 message ReadLinksRequest {
   optional string id = 1;
-  optional string project_id = 2;
+  optional string projectId = 2;
   optional string token = 3;
   optional string expires = 4;
   optional string status = 5;
@@ -37,7 +37,7 @@ message ReadLinksResponse {
 
 message LinksObject{
   string id = 1;
-  string project_id = 2;
+  string projectId = 2;
   string token = 3;
   string expires = 4;
   string status = 5;
@@ -46,7 +46,7 @@ message LinksObject{
 
 message UpdateLinksRequest {
   optional string id = 1;
-  optional string project_id = 2;
+  optional string projectId = 2;
   optional string token = 3;
   optional string expires = 4;
   optional string status = 5;
@@ -55,13 +55,13 @@ message UpdateLinksRequest {
 
 message UpdateLinksResponse {
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
 }
 
 
 message DeleteLinksRequest {
   optional string id = 1;
-  optional string project_id = 2;
+  optional string projectId = 2;
   optional string token = 3;
   optional string expires = 4;
   optional string status = 5;
@@ -69,5 +69,5 @@ message DeleteLinksRequest {
 
 message DeleteLinksResponse {
   bool success = 1;
-  string message = 2;
+  repeated string message = 2;
 }

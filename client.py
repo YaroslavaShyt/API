@@ -1,20 +1,26 @@
-from utils.imports import projects_pb2_grpc, grpc, asyncio, users_pb2_grpc, anomalies_pb2_grpc
-from client_functions.projects import *
-from client_functions.users import *
+from utils.imports import projects_pb2_grpc, grpc, asyncio, users_pb2_grpc, anomalies_pb2_grpc, links_pb2_grpc, \
+    links_pb2
+from client_functions.projects  import *
+from client_functions.users     import *
 from client_functions.anomalies import *
 from client_functions.raw_files import *
+from client_functions.links     import *
 import pandas as pd
 
 
 async def run() -> None:
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
-        stub = anomalies_pb2_grpc.AnomaliesServiceStub(channel)
-        print(f"Delete result anomalies:")
-        delete_result = await delete_record_anomalies(stub, {"id": '8'})
-        print(delete_result)
+        stub = links_pb2_grpc.LinksServiceStub(channel)
+        print(f"Create record links:")
+        create_result = await create_record_links(
+            stub, {"projectId": 4,
+                   "token": "dsgdgdsg",
+                   "status": 0})
+        print(create_result)
 
 
 """
+# PROJECTS
         print(f"Create record projects:")
         create_result = await create_record_projects(
             stub, {"name": "Name", 
@@ -37,22 +43,17 @@ async def run() -> None:
         
         print(f"Delete result projects:")
         delete_result = await delete_record_projects(stub, {"id": '4'})
-        print(delete_result)
-        
-
-        
-        
-
-        
-
-        
+        print(delete_result)    
         """
 
 """
-       
-# PROJECTS
-        
+    
         # ANOMALIES
+        stub = anomalies_pb2_grpc.AnomaliesServiceStub(channel)
+        print(f"Delete result anomalies:")
+        delete_result = await delete_record_anomalies(stub, {"id": '8'})
+        print(delete_result)
+        
         print(f"Create record anomalies:")
         create_result = await create_record_anomalies(
             stub, {

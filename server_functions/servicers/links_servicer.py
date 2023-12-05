@@ -1,4 +1,4 @@
-from utils.imports import links_pb2, sessionmaker
+from utils.imports import links_pb2, sessionmaker, links_pb2_grpc
 from database.engine import engine
 from database.tables import projects, links
 from utils.check_input_functions import *
@@ -6,7 +6,7 @@ from utils.check_input_functions import *
 Session = sessionmaker(bind=engine)
 
 
-class LinksServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
+class LinksServicer(links_pb2_grpc.LinksServiceServicer):
     def __init__(self):
         # define field types for better check-outs
         self.required_fields    = ['projectId', 'token', 'status']

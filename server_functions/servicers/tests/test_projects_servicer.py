@@ -3,7 +3,7 @@ from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 from proto_pb2.projects.projects_pb2 import CreateProjectsRequest, ReadProjectsRequest, UpdateProjectsRequest, DeleteProjectsRequest
-from ...projects_servicer import ProjectServicer
+from server_functions.servicers.projects_servicer import ProjectServicer
 
 
 class TestProjectServicer(unittest.TestCase):

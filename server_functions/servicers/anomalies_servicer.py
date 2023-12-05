@@ -130,7 +130,8 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                     request)
 
             if error_messages:
-                return anomalies_pb2.UpdateAnomaliesResponse({"success": False, "message": error_messages})
+                data = {"success": False, "message": error_messages}
+                return anomalies_pb2.UpdateAnomaliesResponse(**data)
             with Session() as session:
                 if conditions:
                     execute_update_query(session, conditions, update_data)
@@ -199,7 +200,8 @@ def build_conditions(request):
 def build_query(session, conditions):
     if not conditions:
         return session.query(anomalies).all()
-    return session.query(anomalies).filter(or_(*conditions)).all()
+    return session.query(anomalies).join(projects, anomalies.c.projectid == projects.c.id).filter(or_(*conditions)).all()
+
 
 
 def build_conditions_and_update_data(request):
@@ -212,6 +214,8 @@ def build_conditions_and_update_data(request):
                 request.update_data, conditions, error_messages, update_data)
 
         validate_update_data(request.update_data, error_messages, update_data)
+    else:
+        error_messages.append('No update data provided.')
 
     return conditions, error_messages, update_data
 

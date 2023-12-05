@@ -8,10 +8,10 @@ import pandas as pd
 
 async def run() -> None:
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
-        stub = projects_pb2_grpc.ProjectsServiceStub(channel)
-        print(f"Read record projects:")
-        read_result = await read_record_projects(stub, {})
-        print(read_result)
+        stub = anomalies_pb2_grpc.AnomaliesServiceStub(channel)
+        print(f"Delete result anomalies:")
+        delete_result = await delete_record_anomalies(stub, {"id": '8'})
+        print(delete_result)
 
 
 """
@@ -22,7 +22,12 @@ async def run() -> None:
                    "status": 0})
         print(create_result)
 
-        
+        print(create_result)
+        stub = projects_pb2_grpc.ProjectsServiceStub(channel)
+        print(f"Read record projects:")
+        read_result = await read_record_projects(stub, {})
+        print(read_result)
+
         
         # не перевіряє неіснуючі where - параметри
         print(f"Update result projects:")
@@ -48,19 +53,19 @@ async def run() -> None:
 # PROJECTS
         
         # ANOMALIES
-        stub = anomalies_pb2_grpc.AnomaliesServiceStub(channel)
         print(f"Create record anomalies:")
         create_result = await create_record_anomalies(
-            stub, {"projectId": 4,
-                   "data": "5b3ad3145fd1518a9f8742c5fa850b60a6b82774e47bf8edf3d1ffc0d339701b".encode('utf-8'),
-                   "status": 0,
-                   #"name": "Name",
-                   "tags": "tags",
-                   "description": "test project 1",
-                   "radius": 3,
-                   "scale": 5,
-                   "processedByMemberId": 1
-                   })
+            stub, {
+                "projectId":4,
+            "data":"5b3ad3145fd1518a9f8742c5fa850b60a6b82774e47bf8edf3d1ffc0d339701b".encode('utf-8'),
+            "description": "description",
+            "status":1,
+            "name":"Test Name",
+            "tags":"Test Tag",
+            "radius":10,
+            "scale":5,
+            "processedByMemberId":2}
+        )
         print(create_result)
 
         print(f"Read record anomalies:")
@@ -69,12 +74,9 @@ async def run() -> None:
 
         print(f"Update result anomalies:")
         update_result = await update_record_anomalies(
-            stub, {"id": '1', "update_data": {"name": "newname4"}})
-        print(update_result)
-
-        print(f"Delete result anomalies:")
-        delete_result = await delete_record_anomalies(stub, {"id": '1'})
-        print(delete_result)
+            stub, {"id": '1', "update_data": {}})
+        print(update_result.success, update_result.message)
+        
         
 """
 

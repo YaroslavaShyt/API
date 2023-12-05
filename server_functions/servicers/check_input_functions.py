@@ -2,8 +2,6 @@ from utils.imports import or_
 from datetime import datetime
 
 
-
-
 def check_is_valid_timestamp(timestamps):
     try:
         for timestamp in timestamps:
@@ -11,7 +9,6 @@ def check_is_valid_timestamp(timestamps):
         return True
     except ValueError:
         return False
-
 
 
 def check_id_in_table(session, tables):
@@ -23,7 +20,7 @@ def check_id_in_table(session, tables):
 
 def check_required_fields(request, fields):
     for i in fields:
-       if not request.HasField(i):
+        if not request.HasField(i):
             return False, i
     return True, ''
 
@@ -35,11 +32,13 @@ def check_string_fields(request, fields):
             return False, field_name
     return True, ''
 
+
 def check_string_lists(fields):
     for field_name in fields:
         if not field_name or not field_name.strip():
             return False, field_name
     return True, ''
+
 
 def check_integer_fields(request, fields):
     for field_name in fields:
@@ -48,12 +47,11 @@ def check_integer_fields(request, fields):
             return False, field_name
     return True, ''
 
+
 def check_integer_in_range(field, int_range):
     if field not in int_range:
         return False, field
     return True, ''
-
-
 
 
 def check_is_numeric_positive_list(values):

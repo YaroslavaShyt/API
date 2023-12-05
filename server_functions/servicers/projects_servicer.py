@@ -53,7 +53,7 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
         return projects_pb2.CreateProjectsResponse(**result)
 
     def ReadRecordProjects(self, request, context):
-        try: 
+        try:
             with Session() as session:
                 conditions = []
                 conditions, error_messages = build_conditions(request)
@@ -81,59 +81,57 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
 
     def UpdateRecordProjects(self, request, context):
         try:
+            conditions, error_messages, update_data = build_conditions_and_update_data(
+                request)
+            if error_messages:
+                return projects_pb2.UpdateProjectsResponse({"success": False, "message": error_messages})
             with Session() as session:
-                conditions = []
-
-               
-
-                if not session.query(projects).filter(or_(*conditions)).count():
-                    return projects_pb2.UpdateProjectsResponse(success=False, message=["No matching records found."])
-
-                update_data = {
-                    "name": request.update_data.name if request.update_data.name else None,
-                    "description": request.update_data.description if request.update_data.description else None,
-                    "status": request.update_data.status if request.update_data.status else None,
-                }
-
-                if any(update_data.values()):
-                    update_query = projects.update().where(or_(*conditions)).values(
-                        **{k: v for k, v in update_data.items() if v is not None}
-                    )
-                    session.execute(update_query)
-                    session.commit()
+                if conditions:
+                    execute_update_query(session, conditions, update_data)
                     result = {"success": True, "message": ["Record updated"]}
                 else:
-                    result = {"success": False,
-                              "message": ["No parameters to update."]}
+                    result = {"success": False, "message": [
+                        "No conditions provided for update"]}
         except Exception as ex:
             result = {"success": False, "message": [str(ex)]}
-
         return projects_pb2.UpdateProjectsResponse(**result)
 
     def DeleteRecordProjects(self, request, context):
         try:
+            conditions, error_messages = build_conditions(request)
+            if error_messages:
+                return projects_pb2.DeleteProjectsResponse({"success": False, "message": error_messages})
             with Session() as session:
-                conditions = []
-                conditions, error_messages = build_conditions(request)
-                if error_messages:
-                    return projects_pb2.DeleteProjectsResponse({"success": False, "message": error_messages})
-
-                if not session.query(projects).filter(or_(*conditions)).count():
-                    return projects_pb2.DeleteProjectsResponse(success=False, message=["No matching records found."])
-
-                if conditions:
-                    delete_query = projects.delete().where(or_(*conditions))
-                    message = "Record deleted."
-                else:
-                    delete_query = projects.delete()
-                    message = "Records deleted."
-                session.execute(delete_query)
-                session.commit()
-                result = {"success": True, "message": [message]}
+                execute_delete_query(session, conditions)
+                result = {"success": True, "message": ['Record deleted']}
         except Exception as ex:
             result = {"success": False, "message": [str(ex)]}
 
         return projects_pb2.DeleteProjectsResponse(**result)
+
+
+def execute_delete_query(session, conditions):
+    if conditions:
+        if not session.query(projects).filter(or_(*conditions)).count():
+            raise ValueError("No matching records found.")
+        delete_query = projects.delete().where(or_(*conditions))
+    else:
+        delete_query = projects.delete()
+    session.execute(delete_query)
+    session.commit()
+
+
+def execute_update_query(session, conditions, update_data_dict):
+    if not session.query(projects).filter(or_(*conditions)).count():
+        raise ValueError("No matching records found.")
+
+    update_query = projects.update().where(or_(*conditions)).values(
+        **{k: v for k, v in update_data_dict.items() if v is not None}
+    )
+    session.execute(update_query)
+    session.commit()
+    session.execute(update_query)
+    session.commit()
 
 
 def build_conditions(request):
@@ -188,7 +186,6 @@ def build_conditions_and_update_data(request):
     return conditions, error_messages, update_data
 
 
-
 def validate_update_data(update_data, error_messages, update_data_dict):
     if update_data.HasField('name'):
         if not check_string_is_not_empty(update_data.name):
@@ -197,14 +194,12 @@ def validate_update_data(update_data, error_messages, update_data_dict):
         else:
             update_data_dict["name"] = update_data.name
 
-
     if update_data.HasField('description'):
         if not check_string_is_not_empty(update_data.description):
             error_messages.append(
                 'Error: <description> values are empty or consist of whitespaces only.')
         else:
             update_data_dict["description"] = update_data.description
-
 
     if update_data.HasField('status'):
         if not check_is_status_int_in_range([update_data.status]):

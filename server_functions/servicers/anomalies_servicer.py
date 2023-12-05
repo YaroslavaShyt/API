@@ -126,17 +126,12 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
 
     def UpdateRecordAnomalies(self, request, context):
         try:
-            with Session() as session:
-                conditions, error_messages, update_data = build_conditions_and_update_data(
+            conditions, error_messages, update_data = build_conditions_and_update_data(
                     request)
 
-                if request.HasField('update_data'):
-                    validate_update_data(request.update_data,
-                                        error_messages, update_data)
-
-                if error_messages:
-                    return anomalies_pb2.UpdateAnomaliesResponse({"success": False, "message": error_messages})
-
+            if error_messages:
+                return anomalies_pb2.UpdateAnomaliesResponse({"success": False, "message": error_messages})
+            with Session() as session:
                 if conditions:
                     execute_update_query(session, conditions, update_data)
                     result = {"success": True, "message": ["Record updated"]}
@@ -150,19 +145,12 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
 
     def DeleteRecordAnomalies(self, request, context):
         try:
+            conditions, error_messages = build_conditions(request)
+            if error_messages:
+                return anomalies_pb2.DeleteAnomaliesResponse({"success": False, "message": error_messages})
             with Session() as session:
-                conditions, error_messages = build_conditions(request)
-
-                if error_messages:
-                    return anomalies_pb2.DeleteAnomaliesResponse({"success": False, "message": error_messages})
-
-                if conditions:
-                    execute_delete_query(session, conditions)
-                    result = {"success": True, "message": ["Record deleted"]}
-                else:
-                    result = {"success": False, "message": [
-                        "No conditions provided for delete"]}
-
+                execute_delete_query(session, conditions)
+                result = {"success": True, "message": ["Record deleted"]}
         except Exception as ex:
             result = {"success": False, "message": [str(ex)]}
 
@@ -252,11 +240,13 @@ def execute_update_query(session, conditions, update_data_dict):
     session.commit()
 
 
-def execute_delete_query(session, conditions):
-    if not session.query(anomalies).filter(or_(*conditions)).count():
-        raise ValueError("No matching records found.")
-
-    delete_query = anomalies.delete().where(or_(*conditions))
+def execute_delete_query(session, conditions): 
+    if conditions:
+        if not session.query(anomalies).filter(or_(*conditions)).count():
+            raise ValueError("No matching records found.")
+        delete_query = anomalies.delete().where(or_(*conditions))
+    else:
+        delete_query = anomalies.delete()
     session.execute(delete_query)
     session.commit()
 

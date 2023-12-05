@@ -98,9 +98,9 @@ async def update_record_projects(stub, data):
 
 
 async def delete_record_projects(stub, data):
-    error_messages = check_projects_data(data)
-    if error_messages:
-        return {"success": False, "message": error_messages}
-    else:
-        response = await stub.DeleteRecordProjects(projects_pb2.DeleteProjectsRequest(**data))
-        return response
+    # error_messages = check_projects_data(data)
+    # if error_messages:
+    #    return {"success": False, "message": error_messages}
+    # else:
+    response = await stub.DeleteRecordProjects(projects_pb2.DeleteProjectsRequest(**data))
+    return response

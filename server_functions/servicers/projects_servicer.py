@@ -1,16 +1,15 @@
-from datetime import datetime
-from utils.imports import projects_pb2_grpc, sessionmaker, projects_pb2, or_
+from utils.imports import projects_pb2_grpc, sessionmaker, projects_pb2
 from database.engine import engine
 from database.tables import projects
-from server_functions.servicers.check_input_functions import *
+from utils.check_input_functions import *
 Session = sessionmaker(bind=engine)
 
 
 class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
     def __init__(self):
         self.required_fields = ['name', 'description', 'status']
-        self.string_fields = ['name', 'description']
-        self.numeric_fields = ['status']
+        self.string_fields   = ['name', 'description']
+        self.numeric_fields  = ['status']
 
     def CreateRecordProjects(self, request, context):
         try:

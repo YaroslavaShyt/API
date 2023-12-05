@@ -1,8 +1,7 @@
-from datetime import datetime
-from utils.imports import anomalies_pb2_grpc, anomalies_pb2, sessionmaker, or_
+from utils.imports import anomalies_pb2_grpc, anomalies_pb2, sessionmaker
 from database.engine import engine
 from database.tables import projects, anomalies, project_members
-from server_functions.servicers.check_input_functions import *
+from utils.check_input_functions import *
 
 Session = sessionmaker(bind=engine)
 
@@ -58,8 +57,7 @@ class AnomaliesServicer(anomalies_pb2_grpc.AnomaliesServiceServicer):
                 # check if database values exist
                 self.other_table_values[projects] = request.projectId
                 self.other_table_values[project_members] = request.processedByMemberId
-                self.success, field_name, = check_id_in_table(
-                    session, self.other_table_values)
+                success, field_name, = check_id_in_table(session, self.other_table_values)
                 if not success:
                     if field_name == projects:
                         field_name = 'projectsId'

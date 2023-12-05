@@ -55,7 +55,6 @@ class ProjectServicer(projects_pb2_grpc.ProjectsServiceServicer):
     def ReadRecordProjects(self, request, context):
         try:
             with Session() as session:
-                conditions = []
                 conditions, error_messages = build_conditions(request)
                 if error_messages:
                     return projects_pb2.ReadProjectsResponse({"success": False, "message": error_messages, "data": []})

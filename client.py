@@ -9,10 +9,10 @@ import pandas as pd
 async def run() -> None:
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
         stub = projects_pb2_grpc.ProjectsServiceStub(channel)
+        print(f"Read record projects:")
+        read_result = await read_record_projects(stub, {})
+        print(read_result)
 
-        print(f"Delete result projects:")
-        delete_result = await delete_record_projects(stub, {"id": '4'})
-        print(delete_result)
 
 """
         print(f"Create record projects:")
@@ -22,14 +22,17 @@ async def run() -> None:
                    "status": 0})
         print(create_result)
 
-        print(f"Read record projects:")
-        read_result = await read_record_projects(stub, {"name": "Name"})
-        print(read_result)
+        
+        
         # не перевіряє неіснуючі where - параметри
         print(f"Update result projects:")
         update_result = await update_record_projects(
             stub, {"id": '4', "update_data": {"name": "updatedname2", "description": "updateddescription", "status": 0}})
         print(update_result)
+        
+        print(f"Delete result projects:")
+        delete_result = await delete_record_projects(stub, {"id": '4'})
+        print(delete_result)
         
 
         
